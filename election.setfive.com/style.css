@@ -1,0 +1,45 @@
+body{
+  background-color: black;
+  width:60%;
+  padding: 0 20% 0 20%;
+}
+
+
+p {
+	line-height:110%;
+      color:white;
+}
+
+a {
+	color:#8cc8ed;
+	text-decoration:none;
+}
+
+
+h3 {
+	padding:13px;
+	background-color:#ff0;
+	color:#000;
+	font-size:140%;
+	font-weight:bold;
+}
+img{
+  margin: 0 auto;
+}
+a img{
+  border: 0;
+}
+.count{
+  font-weight: bold;
+  color:red;
+}
+a {
+
+        color: #FD5A1E;
+
+	text-decoration: none;
+
+	}
+a:hover{
+  text-decoration: underline;
+}

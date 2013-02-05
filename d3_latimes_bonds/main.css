@@ -1,0 +1,53 @@
+.chart {
+  font: 10px sans-serif;
+  shape-rendering: crispEdges;
+}
+
+.container {
+    margin-top: 10px;
+}
+
+.circle {
+    fill: #3366FF;
+    color: #fff;
+    stroke: #C2C2C2;
+    opacity: .65;
+}
+
+.circle.red {
+    fill: #FF1A1A;
+}
+
+.info-table {
+    padding-top: 30px;
+}
+
+
+#infoTable {
+    font-size: 12px;
+}
+
+.warning-red {
+    height: 16px;
+    width: 16px;
+    background-color: #FF1A1A;
+    margin: auto;
+    border: 1px solid #bbb;
+}
+
+.filters table {
+    margin: 0px;
+}
+
+.filters select {
+    width: auto;
+}
+
+.header {
+    background-color: #222;
+    padding: 20px;
+}
+
+.header a {
+    color: #fff;
+}

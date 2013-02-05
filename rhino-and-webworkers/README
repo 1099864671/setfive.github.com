@@ -1,0 +1,3 @@
+This is NOT a very smart idea. It pipes HTML5 WebWorker requests over Flash to a Rhino backend for clients that don't yet support WebWorkers.
+
+See http://shout.setfive.com/2009/10/06/random-acts-of-madness-jsflexrhino-webworkers-for-ie/

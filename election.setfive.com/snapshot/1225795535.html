@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+  <title>Setfive Consulting  - Election Day On Twitter</title>
+ <link rel="stylesheet" href="style.css" type="text/css" media="screen" charset="utf-8" />
+ </head>
+<body>
+<a href="http://www.setfive.com"><img src="http://setfive.com/assets/images/logo.png"></a><br />
+<h3>Election Day - Who is winning what states?  What does Twitter have to say?</h3>
+<div id="updating"></div>
+<div id="maincontent">
+<p>At about midnight today we decided it may be interesting to see what states are voting what according to monitoring twitter.  We've written a few algorithms that parse many of the posts to twitter for certain content, to determine if people are stating they are supporting a candidate or if they voted for a specific one.  As the states get darker red or blue, you can see who Twitter is saying is going to win the state.  So far we have recorded <span class='count'>206</span> inputs from twitter. Results will update automatically every 10 seconds.</p>
+<div align="center">
+<img src='http://chart.apis.google.com/chart?chd=s:9y99999999m99A999999A999999A99AA9999&chco=ffffff,FF0000,FF3333,FF4040,FFC1C1,BCD2EE,5993E5,1464F4,0147FA&chf=bg,s,eaf7fe&chtm=usa&chld=ALAZARCACODEDCFLGAHIILINKSKYLAMEMDMAMIMNNENVNHNJNYNCOHOKORPASCTNTXVAWAWI&chs=440x220&cht=t' alt='map should be here google blocked us.'  /></div>
+</div>
+<p>Since we did write this in about 2 hours, we can't promise that it is accurate, but thought it'd be interesting.  Leave us comments over on our <a href="http://shout.setfive.com">blog post.</a></p>
+<br />
+<div align="center"><p>&copy;2008 Setfive Consulting, LLC</p></div>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-3761258-6");
+pageTracker._trackPageview();
+</script>
+<script type="text/javascript">
+function updatecontents()
+{
+
+	document.getElementById("updating").innerHTML='<p>Updating map....</p>';
+	loadXMLDoc();	
+	refreshstart();
+
+}
+function refreshstart(){
+	setTimeout("updatecontents()", 10000);
+}
+var req;
+function loadXMLDoc() {
+        req = false;
+    // branch for native XMLHttpRequest object
+    if(window.XMLHttpRequest) {
+        try {
+                        req = new XMLHttpRequest();
+        } catch(e) {
+                        req = false;
+        }
+    // branch for IE/Windows ActiveX version
+    } else if(window.ActiveXObject) {
+        try {
+                req = new ActiveXObject("Msxml2.XMLHTTP");
+        } catch(e) {
+                try {
+                        req = new ActiveXObject("Microsoft.XMLHTTP");
+                } catch(e) {
+                        req = false;
+                }
+                }
+    }
+        if(req) {
+                req.onreadystatechange = processReqChange;
+                req.open("GET", "getUpdate.php", true);
+                req.send("");
+        }
+}
+
+function processReqChange() {
+    // only if req shows "loaded"
+    if (req.readyState == 4) {
+        // only if "OK"
+        if (req.status == 200) {
+            var select = document.getElementById("maincontent");
+	    makeFile(req.responseText);
+        } else {
+            alert("There was a problem retrieving the data:\n" +req.statusText);
+        }
+    }
+}	
+
+function makeFile(obj)
+{
+ 
+document.getElementById("maincontent").innerHTML=obj;
+document.getElementById("updating").innerHTML='<p>Updated.</p>';
+}
+refreshstart();
+</script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>GNU Plot @ code.setfive.com</title>
+</head>
+<body>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/prototype/1.6.0.2/prototype.js"></script>
+    <div id="plot-image">
+        <img id="graph" src="http://code.setfive.com/gnuplot/bin/plot.php?f=sqrt(x)&d=0:100"></img>
+    </div>
+    <div id="bottom">
+        This is a JS/PHP front-end for GNU Plot.<br/>
+        <label for="function">Function (ie. x^2) : </label><input type="text" id="function" /> <br />
+        <label for="domain">Domain (ie. -5:5) : </label><input type="text" id="domain" /> <br />
+        <input type="button" id="submit" onclick="updateGraph()" value="Update" />
+    </div>
+    <script type="text/javascript">
+    function updateGraph(){
+        var url = "plot.php?";
+        
+        if( !$F('function') ){
+            alert("enter a function!");
+            return;
+        }
+        
+        var func = $F('function').replace("^", "**", "g");
+        func = func.replace("+", "%2B", "g");
+        
+        url += "f=" + func;
+        
+        if( $F('domain') ){
+            url += "&d=" + $F('domain');
+        }
+        
+        $('graph').src = url;
+    }
+    </script>
+</body>
+</html>
