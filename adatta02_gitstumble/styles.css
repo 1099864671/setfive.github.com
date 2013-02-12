@@ -1,0 +1,101 @@
+body {
+  background: -moz-linear-gradient(#FAFAFA, #EAEAEA) repeat fixed 0 0 transparent;
+  background-color: #EAEAEA;
+  height: 100%;
+  width: 100%;
+}
+
+.home-container {
+  height: 400px;
+  margin-top: -200px;
+  position: absolute;
+  top: 50%;
+}
+
+.fancy-box {
+  box-shadow: 0 1px 3px #444;
+  -moz-box-shadow: 0 1px 3px #444;
+  -webkit-box-shadow: 0 1px 3px #444;
+  background-color: #fafafa;
+  border-radius: 3px;
+}
+
+.banner {
+  background: -moz-linear-gradient(#839BA9, #405A6A) repeat scroll 0 0 transparent;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  padding: 5px;
+}
+
+.banner * {
+  color: #fff;
+  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.centered {
+  text-align: center;
+}
+
+.inner {
+  padding: 20px;
+}
+
+.listless {
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+}
+
+.inline li {
+  display: inline;
+}
+
+.repository-list {
+  padding: 10px;
+  background-color: #fafafa;
+}
+
+.repository {
+  padding-top: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px dotted #405A6A;
+}
+
+.repository ul {
+  padding-top: 3px;
+}
+
+.main-loading {
+  background: url("loader.gif") no-repeat scroll 50% 50%;
+  min-height: 500px;
+}
+
+.main-loading * {
+    display: none;
+}
+
+.main-window { 
+  padding: 20px;
+}
+
+.main-sidebar {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin-left: 0px !important;
+}
+
+.search-form {
+  width: 400px;
+  margin: auto;
+}
+
+.main-sidebar .alert {
+    margin-bottom: 0px;
+}
+
+.main-sidebar-inner {
+    overflow: auto;
+    padding: 10px;
+}
