@@ -1,0 +1,27 @@
+<html>
+  <head></head>
+  <body>
+    <script type="text/javascript" 
+      src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    
+    <form action="" id="someForm" 
+          method="GET" onsubmit="saysomething(); return false">
+      <input type="text" name="someshit" />
+      <input type="submit" value="Submit Form" />
+      <input type="button" value="jQuery.submit()" id="clickIt" />
+    </form>
+
+    <script type="text/javascript">
+    
+    function saysomething(){
+      alert("Hello world from saysomething()");
+    }
+    
+    $(document).ready( function(){
+      $("#clickIt").click( function(){ $("#someForm").submit(); });
+    });
+    
+    </script>
+    
+  </body>
+</html>
