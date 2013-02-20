@@ -43,6 +43,18 @@ endfor;
         
         <div class="row">
             <div class="span12">
+                <div class="inner-progress">
+                
+                <div class="progress progress-striped active">
+                    <div id="progressBar" class="bar" style="width: 100%;"></div>
+                </div>
+                
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="span12">
                 
                 <div class="inner centered win-image hide">
                     <img src="you-win-o.gif" />
@@ -72,9 +84,40 @@ endfor;
     </div>
 </div>
     
+<div id="timeOut" class="modal hide fade">
+    <div class="modal-header">
+    <h3>Time over</h3>
+    </div>
+    <div class="modal-body">
+        <div class="centered"><h3>Your time has expired...</h3></div>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn btn-large btn-success" data-provide="no">Ok</a>
+    </div>
+</div>
+    
 <script>
-$(document).ready(function(){
 
+var totalSeconds = 10000;
+var secondsLeft = totalSeconds;
+var timer = null;
+
+$(document).ready(function(){   
+
+    timer = window.setInterval(function(){
+        
+        secondsLeft = secondsLeft - 250;
+        
+        var percent = (secondsLeft / totalSeconds) * 100;        
+        $("#progressBar").css("width", percent + "%");
+
+        if( secondsLeft == 0 ){
+            $("#timeOut").modal({"backdrop": "static", "show": true});
+            window.clearInterval( timer );
+        }
+        
+    }, 250);
+    
     $("[data-provide='yes']").click(function(){
         var n = <?php echo $n + 1; ?>;
         window.location = "game.php?n=" + n;
@@ -89,6 +132,8 @@ $(document).ready(function(){
     $("[data-provide='card']").click(function(){
         var win = $(this).data("winner");
 
+        window.clearInterval( timer );
+        
         if( win ){
             $(this).find("img").attr("src", "joker_card_small.png");
             $(".win-image").show();

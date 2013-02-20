@@ -40,3 +40,13 @@ body {
     text-align: center;
 }
 
+.inner-progress {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 80px;
+    padding-right: 80px;
+}
+
+.progress {    
+    border: 2px solid #555;
+}
