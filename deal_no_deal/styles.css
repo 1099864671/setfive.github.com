@@ -1,0 +1,42 @@
+body {
+    background-image: url("Las_Vegas_89.jpg");
+    background-position: center center;
+    background-size: cover;
+    background-attachment: fixed;
+    height: auto;
+    font-family: 'Open Sans',sans-serif;
+}
+
+.logo-bg {
+    background-color: #000;
+    margin-top: 75px;
+    text-align: center;
+}
+
+.inner {
+    padding: 10px;
+}
+
+.shadow-box {
+    background-color: #eee;
+    box-shadow: 0 2px 2px #636363;
+}
+
+.sign-up-form {
+    border: 2px solid #ddd;
+    padding: 15px;
+    background-color: #EDEDED;
+}
+
+.card-deck td {
+    text-align: center;
+}
+
+.win-image {
+    margin-top: 5px;
+}
+
+.centered {
+    text-align: center;
+}
+
