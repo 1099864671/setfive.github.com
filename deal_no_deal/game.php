@@ -104,6 +104,7 @@ var timer = null;
 
 $(document).ready(function(){   
 
+    <?php if( $_REQUEST["p"] !== "false" ): ?>
     timer = window.setInterval(function(){
         
         secondsLeft = secondsLeft - 250;
@@ -117,6 +118,7 @@ $(document).ready(function(){
         }
         
     }, 250);
+    <?php endif; ?>
     
     $("[data-provide='yes']").click(function(){
         var n = <?php echo $n + 1; ?>;
@@ -133,6 +135,7 @@ $(document).ready(function(){
         var win = $(this).data("winner");
 
         window.clearInterval( timer );
+        $(".card-deck, .inner-progress").hide();
         
         if( win ){
             $(this).find("img").attr("src", "joker_card_small.png");
