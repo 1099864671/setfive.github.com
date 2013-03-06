@@ -42,14 +42,16 @@ foreach($uniqueArrays as $key => $vals){
 
     <div class="header">
         <div class="pull-left">
-            <a href="http://www.setfive.com" target="_blank"><img src="http://www.setfive.com/logo.png" /></a>
+            <a href="http://www.setfive.com" target="_blank"><img src="logo_website_no_consulting.png" /></a>
         </div>
         <div class="pull-right">
-            <a href="mailto:contact@setfive.com">contact@setfive.com</a>
-            |
-            <a href="http://www.twitter.com/setfive.com">@setfive</a>
-            |
-            <a href="tel:6178630440">617.863.0440</a>
+            <div class="header-menubar">
+                <a href="mailto:contact@setfive.com">contact@setfive.com</a>
+                |
+                <a href="http://www.twitter.com/setfive.com">@setfive</a>
+                |
+                <a href="tel:6178630440">617.863.0440</a>
+            </div>
         </div>
         <div class="clearfix"></div>
     </div>

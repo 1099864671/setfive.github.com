@@ -45,7 +45,11 @@
 
 .header {
     background-color: #222;
-    padding: 20px;
+    padding: 10px;
+}
+
+.header-menubar {
+    margin-top: 20px;
 }
 
 .header a {
