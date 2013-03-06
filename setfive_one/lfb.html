@@ -1,0 +1,21 @@
+<h3>The London Forex Broadsheet (LFB)</h3>
+<p>The LFB brought us specs and requirements. Nice.</p>
+<p>
+  The LFB's requirements were clear from the beginning.
+  They needed a high availability system to syndicate proprietary content in a standard way.
+  We looked past the buzzwords and realized that The LFB was looking for a custom RSS
+    system through which they could syndicate their news content.
+</p>
+<p>
+  We picked RSS because it would allow their customers to easily consume the news feeds while still allowing
+  The LFB to control access to the feed. To build this system, we decided to deploy the Symfony framework on a LAMP stack.
+  The final product was a custom RSS system along with an API for partners to retrieve specific news stories. 
+  Although building the application was challenging, the more interesting aspect was ensuring high availability.
+</p>
+<p>
+  High availability is a term that gets thrown around a lot without a precise definition.
+  Luckily, The LFB knew that they wanted their application to be available 24/7/365, because their partners relied on the service.
+  To satisfy this, we set up the application on redundant servers so that the failure of one server doesn't compromise the service.
+  
+</p>
+<p>Technologies: Symfony Framework (PHP), JavaScript/AJAX, Adobe Flex.</p>
