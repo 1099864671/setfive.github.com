@@ -125,7 +125,6 @@
 
     var svg;
     var innerSvg;
-    var jqBaseColor = jQuery.Color( "#eee" );
     
     var cellSize = 30;
 	var cellBuffer = 32;
@@ -134,7 +133,7 @@
     
     $(document).ready(function(){
         
-        getData("fname");
+        getData("fname_text");
 
         $("[data-provide='sort']").click(function(){
             $("[data-provide='sort']").removeClass("selected");
