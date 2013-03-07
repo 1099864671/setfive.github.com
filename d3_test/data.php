@@ -6,6 +6,42 @@ $header = str_getcsv(array_shift( $lines ), ";");
 
 $nameKeys = array("fname", "lname", "email_address", "email_domain");
 
+if( array_key_exists("stats", $_REQUEST) ){
+    
+    $totals = array("fname" => array(), "lname" => array(), "email" => array(), "track" => array());
+    
+    foreach( $lines as $ln ){
+        
+        $obj = array();
+        foreach( str_getcsv( $ln, ";" ) as $i => $val ){
+            
+            if( !in_array($header[$i], array("fname", "lname", "email", "track")) ){
+                continue;
+            }
+            
+            $val = trim(strtolower($val));            
+            if( $header[$i] == "email" ){
+                list($addr, $val) = explode("@", $val);
+            }                        
+            
+            if( !array_key_exists($val, $totals[$header[$i]]) ){
+                $totals[ $header[$i] ][ $val ] = 0;
+            }
+            
+            $totals[ $header[$i] ][ $val ] += 1;
+        }
+        
+    }
+    
+    foreach( array_keys($totals) as $key ){
+        ksort( $totals[$key] );
+    }
+    
+    print_r($totals);
+    
+    exit(0);
+}
+
 foreach( $lines as $ln ){
 	
 	$obj = array();

@@ -55,3 +55,23 @@
 .header a {
     color: #fff;
 }
+
+.centered {
+    text-align: center;
+}
+
+.padded-bottom {
+    padding-bottom: 20px;
+}
+
+.stats-line {
+    font-size: 24px;
+    line-height: 35px;
+}
+
+.highlight {
+    font-style: normal;
+    color: #0077B3;
+    font-weight: bold;
+    font-size: 30px;
+}

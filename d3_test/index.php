@@ -42,6 +42,52 @@
         <div class="clearfix"></div>
     </div>
 
+    <div class="container padded-bottom">
+        <div class="row">
+            <div class="span12 centered">
+                <h2>Welcoming the Startup Institute: Boston class of Spring '13</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span12">
+                <div class="alert alert-info centered">
+                    We're excited to meet everyone but in the meantime we thought it would be fun to put together a visualization of your class. 
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span12">
+                <div class="stats-line">
+                    <em class="highlight">Eight</em> members of the class have a first name that starts with "J" and <em class="highlight">two</em> have a first name that starts with "Z". 
+                    <em class="highlight">Two</em> last names that start with "Z" and <em class="highlight">one</em> with "Q". On resumes, @gmail.com appeared <em class="highlight">thirty six</em> times, by far the most popular domain.
+                    <em class="highlight">Thirteen</em> of you are in the dev track, <em class="highlight">seventeen</em> in marketing, <em class="highlight">ten</em> in product, and <em class="highlight">thirteen</em> in sales.                         
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container padded-bottom">
+        <div class="row">
+            <div class="span12">
+                <div class="page-header">
+                    <h3>Visualizing the class</h3>                   
+                </div>  
+                <p>Each 3x3 grid below represents a member of the class. The top left and top right squares a 
+                   HSL representation of the <a href="http://www.php.net/manual/en/function.metaphone.php" target="_blank">metaphone</a> of the student's name.
+                   The middle left and middle right squares are a HSL representation of the <a href="http://www.php.net/manual/en/function.metaphone.php" target="_blank">metaphone</a> 
+                   of the student's email user name and domain name (john.doe, gmail.com). Finally, the bottom row represents which track the student is in.</p>
+                
+                <ul class="listless inline">
+                    <li><strong>Sort By:</strong></li>
+                    <li><a href="#" data-sort="fname">First Name</a></li>
+                    <li><a href="#" data-sort="lname">Last Name</a></li>
+                    <li><a href="#" data-sort="track">Track</a></li>
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+    
     <div class="container">
         <div class="row">
             <div class="span12">
@@ -88,23 +134,6 @@
             
             */
                      
-        	/*
-        	 [
-         	 	[ userIndex = 0
-          	 		[0.47,0.45,0], step = 0
-          	 		[0.61,0.64,0.41] step = 1
-          	 		[index=0, index=1, index=2]
-          	 	],
-          	 	[ userIndex = 1
-           	 		[0.48,0.48,0],
-           	 		[0.57,0.67,0.39]
-           	 	],
-           	 	[ userIndex = 2
-            	 	[0.72,0.71,1],
-            	 	[0.58,0.67,0.21]
-            	]
-             ]
-        	*/
             rowSvg = svg.selectAll('g')
 		    		      .data(data)
 		   			   .enter().append('g');
