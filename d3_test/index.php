@@ -58,19 +58,36 @@
     
     var cellSize = 30;
 	var cellBuffer = 32;
-	var cubeSize = 40 * 3;
+	var cubeSize = (cellBuffer * 1.15) * 3;
+    var cubesPerRow = 8;
     
     $(document).ready(function(){
         
         svg = d3.select("#svg").append("svg")
         		.attr("class", "chart")
         		.attr("width", 930)
-        		.attr("height", 600)
+        		.attr("height", 900)
         	  .append("g");   
 
         
-        $.getJSON("http://symf.setfive.com/d3_test/data.php", function(data){
+        $.getJSON("data.php", function(data){
 
+            /*
+                [
+                     [
+                          {"h":0,"s":0.44311377245509,"l":0.38235294117647},
+                          {"h":170.74390243902,"s":0.65560165975104,"l":0.65271966527197}
+                     ],
+                     [
+                          {"h":168.68674698795,"s":0.94610778443114,"l":0.83529411764706},
+                          {"h":170.74390243902,"s":0.67219917012448,"l":0.61924686192469}
+                     ],
+                     [{"h":0,"s":0.9940119760479,"l":0.84117647058824},{"h":0,"s":0.31535269709544,"l":0.30125523012552}]
+                     
+                ]
+            
+            */
+                     
         	/*
         	 [
          	 	[ userIndex = 0
@@ -107,45 +124,24 @@
 								    .data(ex)
 								  .enter().append("rect")
 					               .attr('x', function(val, index){
-						               return (cubeSize * userIndex) + (index * cellBuffer);
+						               var rowMultiplier = userIndex % cubesPerRow;             
+						               return (cubeSize * rowMultiplier) + (index * cellBuffer);
 						            })
 					               .attr('y', function(val, index){
-						               return (step * cellBuffer);
+					                   var rowOffset = userIndex >= cubesPerRow ? Math.floor(userIndex / cubesPerRow) * cubeSize : 0;						               
+						               return rowOffset + (step * cellBuffer);
 					               })
 					               .attr('width', cellSize)
 					               .attr('height', cellSize)
-					               .attr('fill', function(percent, index){
-						               var color = ( step == 0 ) ? "#E01B6A" : "#1F61CC";
-						               
-						               return jqBaseColor.transition( color, percent ).toHexString(); 
+					               .attr('fill', function(obj, index){
+						               return jQuery.Color( {hue: obj.h, saturation: obj.s, lightness: obj.l, alpha: 1} ).toRgbaString();
 						            })
 					               .attr("data", function(e){ return e;});
 				});
 								      
             });
-
-        	/*
-		    innerSvg.each(function(el, i) {
-				var colors = d3.select(this)
-				              .selectAll('rect')
-				               .data(el)
-				             .enter().append('rect')
-				               .attr('x', function(hex, index){ return (cellSize * index) + (cellSize * 1.03);})
-				               .attr('y', (cellSize * i) + (cellSize * 1.03))
-				               .attr('width', cellSize)
-				               .attr('height',cellSize)
-				               .attr('fill', function(hex, index){ return "#eee"; });
-
-			});
-			*/
 			
-        });
-        
-        var data = [
-           ["#EEE", "#E01B6A", "#6A95E6"],
-           ["#E01B6A", "#15FF00", "#DE9228"],
-           ["#7A8C8B", "#00C8FF", "#FFEA00"]
-        ];
+        });        
 
     	
         

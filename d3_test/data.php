@@ -2,33 +2,35 @@
 
 $data = array();
 $lines = explode("\n", trim(file_get_contents("ssdata.csv")));
-
 $header = str_getcsv(array_shift( $lines ), ";");
+
+$nameKeys = array("fname", "lname", "email_address", "email_domain");
 
 foreach( $lines as $ln ){
 	
 	$obj = array();
 	foreach( str_getcsv( $ln, ";" ) as $i => $val ){
-		$obj[ $header[$i] ] = strtolower($val);
+	    
+	    if( in_array($header[$i], $nameKeys) ){	    
+		    $obj[$header[$i]] = metaphone(trim(strtolower($val)));
+	    }else if( $header[$i] == "email" ){
+	        list($addr, $domain) = explode("@", $val);	        
+	        $obj["email_address"] = metaphone(trim(strtolower($addr)));
+	        $obj["email_domain"] = metaphone(trim(strtolower($domain)));
+	    }else{
+	        $obj[$header[$i]] = trim(strtolower($val));
+	    }
+	    
 	}
 	
 	$data[] = $obj;	
 }
 
-shuffle($data);
 
-$nameKeys = array("fname", "lname");
+usort($data, function($a, $b){
+   return strcmp($a["fname"],  $b["fname"]); 
+});
 
-/*
-$maxLengths = array("fname" => 0, "lname" => 0);
-foreach( $nameKeys as $key ){
-	$maxLengths[$key] = array_reduce( $data, 
-							function($res, $item) use ($key) {
-								return $res + strlen($item[$key]);
-					    }, 0 );
-	$maxLengths[$key] = ( $maxLengths[$key] / count($data) )  * ord("z");
-}
-*/
 
 $maxValues = array_fill_keys($nameKeys, array(0 => 0, 1 => 0, 2 => 0));
 $payload = array();
@@ -53,22 +55,71 @@ foreach( $data as $dt ){
 		$dataEl[$key] = $keyedSplits[$key];
 	}
 
+	$dataEl["track"] = $dt["track"];
+	
 	$payload[] = $dataEl;
 }
 
 $payload = array_map(function($dt) use ($nameKeys, $maxValues){
 		
-	$obj = array();
-	foreach($nameKeys as $key){
-		$dt[$key] = array_map(function($el, $index) use ($maxValues, $key){ 
-								return round($el / $maxValues[$key][$index], 2); 
-					}, $dt[$key], array_keys($dt[$key]));	
-		$obj[] = $dt[$key];
+	$obj = array( 0 => array(), 1 => array() );
+	
+	$obj[0][] = getHSLColor( $dt, "fname", $maxValues );	
+	$obj[0][] = array("h" => 336, "s" => 0, "l" => .95);
+	$obj[0][] = getHSLColor( $dt, "lname", $maxValues );	
+
+	$obj[1][] = getHSLColor( $dt, "email_address", $maxValues );
+	$obj[1][] = array("h" => 336, "s" => 0, "l" => .95);
+	$obj[1][] = getHSLColor( $dt, "email_domain", $maxValues );
+		
+	switch( $dt["track"] ){	    
+	    case "sales":
+	        $trackColor = array("h" => 120, "s" => .78, "l" => .75);
+	        break;	        
+	    case "prod":
+	        $trackColor = array("h" => 293, "s" => .83, "l" => .75);
+	        break;	        
+	    case "mrkt":
+	        $trackColor = array("h" => 31, "s" => .9, "l" => .75);
+	        break;	        	    
+	    default:
+	    case "dev":
+	        $trackColor = array("h" => 221, "s" => .83, "l" => .75);
+	        break;	    
 	}
+	
+	$obj[2] = array_fill(0, 3, $trackColor);
 	
 	return $obj;
 }, $payload);
 
-$payload = array_slice($payload, 0, 10);
 
 echo json_encode( $payload );
+
+function getHSLColor( $dt, $key, $maxValues ){
+        
+    $colorVal = array("h" => 0, "s" => 0, "l" => 0);
+    
+    foreach( $dt[$key] as $index => $value ){
+         
+        $percentMax = $value / $maxValues[$key][$index];
+        $colorKey = "";
+        $hslVal = $percentMax;
+         
+        switch( $index ){
+            case 0:
+                $colorKey = "l";
+                break;
+            case 1: $colorKey = "s";
+            break;
+            case 2: $colorKey = "h";
+            $hslVal = $percentMax * 359;
+            break;
+            default: break;
+        }
+    
+        $colorVal[$colorKey] = $hslVal;
+    }
+    
+    return $colorVal;
+}
