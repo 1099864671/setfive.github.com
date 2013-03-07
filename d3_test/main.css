@@ -75,3 +75,27 @@
     font-weight: bold;
     font-size: 30px;
 }
+
+a.selected {
+    color: #333;
+}
+
+.sales {
+    color: hsl( 120, 78%, 75% );
+    font-weight: bold;
+}
+
+.prod {
+    color: hsl( 293, 83%, 75% );
+    font-weight: bold;    
+}
+
+.marketing {
+    color: hsl( 31, 90%, 75% );
+    font-weight: bold;        
+}
+
+.dev {
+    color: hsl( 221, 83%, 75% );
+    font-weight: bold;        
+}

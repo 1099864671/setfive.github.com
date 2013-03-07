@@ -77,12 +77,24 @@
                    The middle left and middle right squares are a HSL representation of the <a href="http://www.php.net/manual/en/function.metaphone.php" target="_blank">metaphone</a> 
                    of the student's email user name and domain name (john.doe, gmail.com). Finally, the bottom row represents which track the student is in.</p>
                 
-                <ul class="listless inline">
-                    <li><strong>Sort By:</strong></li>
-                    <li><a href="#" data-sort="fname">First Name</a></li>
-                    <li><a href="#" data-sort="lname">Last Name</a></li>
-                    <li><a href="#" data-sort="track">Track</a></li>
-                </ul>
+                <div class="pull-left">                
+                    <ul class="listless inline">
+                        <li><strong>Sort By:</strong></li>
+                        <li><a class="selected" href="#" data-provide="sort" data-sort="fname">First Name</a></li>
+                        <li><a href="#" data-provide="sort" data-sort="lname">Last Name</a></li>
+                        <li><a href="#" data-provide="sort" data-sort="track">Track</a></li>
+                    </ul>
+                </div>
+                
+                <div class="pull-right">
+                    <ul class="listless inline">
+                        <li><strong>Key: </strong></li>
+                        <li class="sales">Sales</li>
+                        <li class="prod">Product</li>
+                        <li class="marketing">Marketing</li>
+                        <li class="dev">Development</li>
+                    </ul>                
+                </div>
                 
             </div>
         </div>
@@ -115,8 +127,23 @@
         		.attr("height", 900)
         	  .append("g");   
 
+        getData("fname");
+
+        $("[data-provide='sort']").click(function(){
+
+            $("[data-provide='sort']").removeClass("selected");
+            $(this).addClass("selected");
+            
+            getData( $(this).data("sort") );
+
+            return false;
+        });
         
-        $.getJSON("data.php", function(data){
+    });
+
+    function getData(sortBy){
+
+        $.getJSON("data.php", {sortBy: sortBy}, function(data){
 
             /*
                 [
@@ -170,11 +197,10 @@
 								      
             });
 			
-        });        
+        });
 
-    	
-        
-    });
+    }
+    
     </script>
     
    </body>

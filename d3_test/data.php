@@ -63,8 +63,13 @@ foreach( $lines as $ln ){
 }
 
 
-usort($data, function($a, $b){
-   return strcmp($a["fname"],  $b["fname"]); 
+$sortKey = "fname";
+if( array_key_exists("sortBy", $_REQUEST) ){
+    $sortKey = $_REQUEST["sortBy"];
+}
+
+usort($data, function($a, $b) use($sortKey) {
+   return strcmp($a[ $sortKey ],  $b[ $sortKey ]); 
 });
 
 
