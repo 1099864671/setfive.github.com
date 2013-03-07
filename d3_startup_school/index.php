@@ -97,7 +97,16 @@
                 </div>
                 
                 <div class="pull-right">
-
+                	<table class="table table-bordered table-striped table-condensed table-key">
+                		<tbody>
+                			<tr><td>A</td><td>M</td><td>Z</td></tr>
+                			<tr>
+                				<td colspan="3">
+                					<div class="letter-gradient">&nbsp;</div>
+                				</td>
+                			</tr>
+                		</tbody>
+                	</table>
                 </div>
                 
             </div>
