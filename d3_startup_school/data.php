@@ -1,5 +1,7 @@
 <?php 
 
+error_reporting(E_ERROR);
+
 $data = array();
 $lines = explode("\n", trim(file_get_contents("ssdata.csv")));
 $header = str_getcsv(array_shift( $lines ), ";");
@@ -42,10 +44,16 @@ if( array_key_exists("stats", $_REQUEST) ){
     exit(0);
 }
 
-if( array_key_exists("filters", $_REQUEST) ){
+$filterEmail = array_key_exists("filterEmail", $_REQUEST) ? strtolower($_REQUEST["filterEmail"]) : null;
+if( $filterEmail ){
+    list($filterAddr, $filterDomain) = explode("@", $filterEmail);
+}
+
+if( !$filterEmail && array_key_exists("filters", $_REQUEST) ){
 	$trackFilters = $_REQUEST["filters"];
+	
 }else{
-	$trackFilters = array();
+	$trackFilters = array("sales", "prod", "mrkt", "dev");
 }
 
 $maxLengths = array_fill_keys( $nameKeys, 0 );
@@ -60,7 +68,11 @@ foreach( $lines as $ln ){
 		    $obj[$header[$i] . "_text"] = trim(strtolower($val));
 		    $maxLengths[$header[$i]] = max( $maxLengths[$header[$i]], strlen($obj[$header[$i] . "_text"]) );		    
 	    }else if( $header[$i] == "email" ){
-	        list($addr, $domain) = explode("@", $val);	        
+	        list($addr, $domain) = explode("@", $val);
+
+	        $obj["email_address_text"] = trim(strtolower($addr));
+	        $obj["email_domain_text"] = trim(strtolower($domain));
+	        
 	        $obj["email_address"] = metaphone(trim(strtolower($addr)));
 	        $obj["email_domain"] = metaphone(trim(strtolower($domain)));
 	    }else{
@@ -112,7 +124,14 @@ foreach( $data as $dt ){
 
 	$dataEl["track"] = $dt["track"];	
 	
-	$payload[] = $dataEl;
+	if( $filterEmail ){
+	    if( $filterDomain == $dt["email_domain_text"] 
+	            && $filterAddr == $dt["email_address_text"] ){
+	        $payload[] = $dataEl;
+	    }	    
+	}else{
+	    $payload[] = $dataEl;
+	}
 }
 
 $payload = array_map(function($dt) use ($nameKeys, $maxValues, $maxLengths){
@@ -155,6 +174,7 @@ $payload = array_map(function($dt) use ($nameKeys, $maxValues, $maxLengths){
 	
 	return $obj;
 }, $payload);
+
 
 
 // $payload = array_slice($payload, 0, 3);

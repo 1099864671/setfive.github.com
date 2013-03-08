@@ -138,7 +138,7 @@
         </div>
         
         <div class="row">
-            <div class="span12">
+            <div class="span6">
             
                 <ul class="listless inline">
                     <li><strong>Filter: </strong></li>
@@ -154,6 +154,16 @@
                     <li><a href="#" data-provide="sort" data-sort="track">Track</a></li>
                 </ul> 
             
+            </div>
+            <div class="span6">
+                <form id="filterSquares" class="form-inline">                    
+                    <strong>Find Yours: </strong>                    
+                    <input id="email" type="text" placeholder="Enter your email address..." />
+                    <div class="btn-group">
+                        <input type="reset" value="Clear" class="btn" />
+                        <input type="submit" value="Search" class="btn btn-primary" />
+                    </div>                    
+                </form>
             </div>
         </div>
         
@@ -195,6 +205,16 @@
         });
         
         $("[rel='tooltip']").popover();
+
+        $("#filterSquares").submit(function(){
+            var email = $(this).find("#email").val();
+            getData("fname_text", email);
+            return false;
+        });
+
+        $("#filterSquares").bind("reset", function(){
+            getData( $("[data-provide='sort']").filter(".selected").data("sort") );
+        });
         
         getData("fname_text");
 
@@ -219,7 +239,7 @@
         
     });
 
-    function getData(sortBy){
+    function getData(sortBy, filterEmail){
 
     	$("#svg *").remove();
     	
@@ -234,7 +254,7 @@
 			filters.push( $(this).data("val") );
         });
     	
-        $.getJSON("data.php", {sortBy: sortBy, filters: filters}, function(data){
+        $.getJSON("data.php", {sortBy: sortBy, filters: filters, filterEmail: filterEmail}, function(data){
 
             /*
                 [
