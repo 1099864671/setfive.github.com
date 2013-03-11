@@ -210,8 +210,16 @@
         $("[rel='tooltip']").popover({trigger: "manual"});
 
         $("[rel='tooltip']").click(function(){
-            $("[rel='tooltip']").popover("hide");
-            $(this).popover("show");
+            var me = $(this);         
+            $(this).popover("toggle");
+            
+            $(".popover:visible").each(function(){
+                if( !$(this).prev("a:first").is(me) ){
+                    $(this).prev("a:first").popover("hide");
+                } 
+            });
+            
+            return false;
         });
         
         $("#filterSquares").submit(function(){
