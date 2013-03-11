@@ -2,7 +2,6 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -21,11 +20,14 @@
     <script src="underscore-min.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script src="jquery.color-2.1.1.min.js"></script>
+    <title>Welcoming the Startup Institute: Boston class of Spring '13</title>
     
   </head>
 
   <body>
 
+    <a target="_blank" href="https://github.com/Setfive/setfive.github.com/tree/master/d3_startup_school"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
+  
     <div class="header">
         <div class="pull-left">
             <a href="http://www.setfive.com" target="_blank"><img src="logo_website_no_consulting.png" /></a>
@@ -203,9 +205,15 @@
         $(".inthe-squares a").click(function(){
             return false;
         });
-        
-        $("[rel='tooltip']").popover();
 
+                
+        $("[rel='tooltip']").popover({trigger: "manual"});
+
+        $("[rel='tooltip']").click(function(){
+            $("[rel='tooltip']").popover("hide");
+            $(this).popover("show");
+        });
+        
         $("#filterSquares").submit(function(){
             var email = $(this).find("#email").val();
             getData("fname_text", email);
