@@ -79,12 +79,14 @@
         
     $(document).ready(function(){
 
-    	var fills = ["#E01B6A", "#8B1BE0", "#4C1BE0", "#576FD9", "#57C1D9", "#91B9C2",
-    	             "#1EA650", "#25A61E", "#F4FF2B", "#FF9D00", "#FF6A00", "#FF3700"]; 
+    	var fills = ["#1c3941", "#153a88", "#1b6cae", "#34b8ab", "#029f38", "#6fb91a",
+    	             "#aac51e", "#f1be03", "#e47a0a", "#ce3305", "#5f2813", "#1c3d44"];
+		var months = ["January", "February", "March", "April", "May", "June", 
+		      		  "July", "August", "September", "October", "November", "December"];
     	var data = [];
     	
     	for(var i = 0; i < 12; i ++){
-			data.push( {i: i, fill: fills[i]} );
+			data.push( {i: i, fill: fills[i], label: months[i]} );
     	}
     	
         svg = d3.select("#svg").append("svg")
@@ -118,11 +120,11 @@
 	     	  .enter()
 	     	.append("text")
 	     	  .attr("dy", 25)
-	     	  .attr("dx", 100)
+	     	  .attr("dx", 90)
 	     	.append("textPath")
 	     	  .attr("xlink:href", function(d){ return "#path" + d["data"].i;})
 	     	  .attr("class", "month-name")
-	     	  .text(function(d){ return d["data"].i;});
+	     	  .text(function(d){ return d["data"].label;});
         
     });
     
