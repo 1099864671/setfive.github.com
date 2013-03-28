@@ -101,7 +101,7 @@
             	    });
         
 		var arc = d3.svg.arc()
-					.innerRadius(400)
+					.innerRadius(390)
 					.outerRadius(440);
 
 		svg.selectAll("path")
@@ -119,14 +119,63 @@
 	     	  .data(pie(data))
 	     	  .enter()
 	     	.append("text")
-	     	  .attr("dy", 25)
+	     	  .attr("dy", 30)
 	     	  .attr("dx", 90)
 	     	.append("textPath")
 	     	  .attr("xlink:href", function(d){ return "#path" + d["data"].i;})
 	     	  .attr("class", "month-name")
 	     	  .text(function(d){ return d["data"].label;});
-        
+
+	     	    
+		var innerArcs = [ ];
+		var inner = 360;
+		var outter = 390;
+		
+		for(var i = 0; i < 5; i++){
+			innerArcs.push( d3.svg.arc().innerRadius(inner).outerRadius(outter) );
+
+			svg.selectAll(".inner-path-" + i)
+		     .data(pie(data))
+		     .enter()
+		   .append("path")
+		     .attr("id", function(d){return "inner-path-" + d["data"].i + "-" + i;})
+		     .attr("d", innerArcs[i])
+		     .attr("transform", "translate(440, 440)")
+		     .attr("stroke", "white")
+		     .attr("stroke-width", 1)
+		     .attr("fill", function(d){return d["data"].fill})
+		     .attr("class", "inner-path-" + i);
+			
+			inner -= 30;
+			outter -= 30;
+		}
+
+		var text = svg.selectAll(".dates")
+					.data([0])
+					.enter()
+				  .append("text")
+				    .attr("dy", 10)
+				    .attr("dx", 10)
+				  .append("textPath")
+				    .attr("class", "month-name")
+				    .attr("xlink:href", "#inner-path-0-0")
+				    .text("1  2  3  4  5  6  7");
+	        
     });
+
+    function getMonthDays(year, month) {
+                        
+    	var monthStart = new Date(year, month, 1);
+    	var monthEnd = new Date(year, month + 1, 1);
+    	var res = { starts: monthStart.getDay(), days: [] };
+
+    	while( monthStart.getMonth() != monthEnd.getMonth() ){        	
+        	res["days"].push( monthStart.getDate() );
+        	monthStart.setDate( monthStart.getDate() + 1 );
+    	}
+    	
+    	return res;
+    }
     
     </script>
     
