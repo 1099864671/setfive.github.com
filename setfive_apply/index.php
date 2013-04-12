@@ -112,7 +112,10 @@ if( strlen($_REQUEST["name"]) == 0 ){
                     
                     <strong>Useful architecture notes:</strong>
                     <ul>
-                    
+                        <li>The tests run in order, so you'll want to work from the top of the files down.</li>
+                        <li>The User class depends on the DB class so you'll have to get the DB class working first.</li>
+                        <li>If you run into a blocking problem, just shoot us an email.</li>
+                        <li>Don't spend more than 1-2 hours on this</li>
                     </ul>
                     
                 </div>
