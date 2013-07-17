@@ -1,0 +1,125 @@
+.chart {
+  font: 10px sans-serif;
+  shape-rendering: crispEdges;
+}
+
+.container {
+    margin-top: 10px;
+}
+
+.circle {
+    fill: #3366FF;
+    color: #fff;
+    stroke: #C2C2C2;
+    opacity: .65;
+}
+
+.circle.red {
+    fill: #FF1A1A;
+}
+
+.info-table {
+    padding-top: 30px;
+}
+
+
+#infoTable {
+    font-size: 12px;
+}
+
+.warning-red {
+    height: 16px;
+    width: 16px;
+    background-color: #FF1A1A;
+    margin: auto;
+    border: 1px solid #bbb;
+}
+
+.filters table {
+    margin: 0px;
+}
+
+.filters select {
+    width: auto;
+}
+
+.header {
+    background-color: #222;
+    padding: 10px 50px;
+}
+
+.header-menubar {
+    margin-top: 20px;
+}
+
+.header a {
+    color: #fff;
+}
+
+.centered {
+    text-align: center;
+}
+
+.padded-bottom {
+    padding-bottom: 20px;
+}
+
+.stats-line {
+    font-size: 24px;
+    line-height: 35px;
+}
+
+.highlight {
+    font-style: normal;
+    color: #0077B3;
+    font-weight: bold;
+    font-size: 30px;
+}
+
+a.selected {
+    color: #333;
+}
+
+.filter-on {
+    font-weight: bold;
+}
+
+.sales {
+    color: hsl( 120, 78%, 75% );
+}
+
+.prod {
+    color: hsl( 293, 83%, 75% );
+}
+
+.marketing {
+    color: hsl( 31, 90%, 75% );
+}
+
+.dev {
+    color: hsl( 221, 83%, 75% );        
+}
+
+.table-key {
+    width: 300px;
+}
+
+.table-key td {
+    text-align: center;
+}
+
+.page-header {
+    margin-bottom: 15px;
+}
+
+.inthe-squares h3 {
+    margin-top: 0px;
+}
+
+.inthe-squares td {
+    text-align: center;
+}
+
+.padded-top {
+    padding-top: 60px;
+}
