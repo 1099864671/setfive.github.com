@@ -44,14 +44,14 @@
         <div class="clearfix"></div>
     </div>
     
-    <div class="container">
+    <div class="content-container container">
         
         <div class="row">
             <div class="span12">
             <div class="page-header">
                 <h1>About</h1>
             </div>
-                <p>This page has 4 autocompleters that run with various algorithms. A full description of what's going on is available at [url]</p>
+                <p>This page has 4 autocompleters that run with various algorithms. A full description of what's going on is available at <a href="http://shout.setfive.com/2013/07/18/does-big-o-complexity-really-matter/" target="_blank">http://shout.setfive.com/2013/07/18/does-big-o-complexity-really-matter/</a></p>
                 <div class="centered">
                     <strong>You'll need to type at LEAST 3 characters</strong>
                 </div>
@@ -79,7 +79,7 @@
                     <option value="LA">Louisiana</option>
                     <option value="ME">Maine</option>
                     <option value="MD">Maryland</option>
-                    <option value="MA">Massachusetts</option>
+                    <option value="MA" selected="selected">Massachusetts</option>
                     <option value="MI">Michigan</option>
                     <option value="MN">Minnesota</option>
                     <option value="MS">Mississippi</option>
@@ -117,6 +117,7 @@
             <div class="span12">        
                 <h3>readMemoryScan</h3>
                 <input class="input-xlarge" type="text" data-provide="autocomplete" data-algo="readMemoryScan" />
+                <span class="timer" data-provide="timer"></span>
             </div>
         </div>
         
@@ -124,6 +125,7 @@
             <div class="span12">        
                 <h3>unsortedTableScan</h3>
                 <input class="input-xlarge" type="text" data-provide="autocomplete" data-algo="unsortedTableScan" />
+                <span class="timer" data-provide="timer"></span>
             </div>
         </div>
         
@@ -131,6 +133,7 @@
             <div class="span12">        
                 <h3>sortedTableScan</h3>
                 <input class="input-xlarge" type="text" data-provide="autocomplete" data-algo="sortedTableScan" />
+                <span class="timer" data-provide="timer"></span>
             </div>
         </div>
         
@@ -138,6 +141,7 @@
             <div class="span12">        
                 <h3>serializednFileScan</h3>
                 <input class="input-xlarge" type="text" data-provide="autocomplete" data-algo="serializednFileScan" />
+                <span class="timer" data-provide="timer"></span>
             </div>
         </div>
         
@@ -148,21 +152,31 @@
        
         $("[data-provide='autocomplete']").each(function(){
            
-            var url = "autocomplete.php";
-            var state = $("#userProfile_state").val();
+            var url = "autocomplete.php";            
             var algo = $(this).data("algo");
             
             $(this).autocomplete({
                 minLength: 3,
-                source: function( request, response ) {                                              
+                source: function( request, response ) {
+                    
+                    var state = $("#userProfile_state").val();                    
+                    var el = $(this.element);
+                    var timer = el.next("[data-provide='timer']");
+                    var start = Date.now();
+                    
+                    el.addClass("loading");
+                    
                     $.ajax({
                         url: url,
                         dataType: "json",
                         data: {"state": state, "search": request.term, "algo": algo},
-                        success: function( data ) {                                                        
+                        success: function( data ) {
+                            el.removeClass("loading");
+                            timer.html( Date.now() - start + "ms" );
+                            
                             response( $.map( data, function( item ) {return {label: item.name, value: item.name, code: item.code }} ) );    
                         },
-                    });                
+                    });  
                 },
                 
           });        

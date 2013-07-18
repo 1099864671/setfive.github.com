@@ -123,3 +123,16 @@ a.selected {
 .padded-top {
     padding-top: 60px;
 }
+
+.content-container {
+    margin-bottom: 80px;
+}
+
+.loading {
+    background: url("loader.gif") 97% 50% no-repeat;
+}
+
+.timer {
+    padding-left: 10px;
+    font-weight: bold;
+}
