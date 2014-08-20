@@ -1,4 +1,6 @@
   <?php 
+  	error_reporting(E_ERROR);
+  	
   	$arr = array();
   	
   	$byYear = array();
@@ -124,6 +126,11 @@
   					<strong>Is the Scala code available?</strong>
   					Sure it's on <a href="https://github.com/adatta02/avc_blog_scraper" target="_blank">GitHub</a>
   				</li>
+  				<li>
+  					Cheers to the <a href="https://github.com/mbostock/d3" target="_blank">mbostock</a> 
+  						and <a href="https://github.com/jasondavies/d3-cloud" target="_blank">jasondavies</a>
+  					for d3 and the d3.cloud layout which are used to generate the word clouds
+  				</li>
   			</ul>    	
   		</div>
 	</div>  		
@@ -231,9 +238,9 @@
 		$("[data-provide='toggle-year']:last").click();
 			
 	  	function draw(words) {
-		    			  
+			  
 		  var text = target.selectAll("text").data(words);
-      	  
+		  		  
 		  text.enter().append("text")
             .style("font-size", function(d) { return d.size + "px"; })
         	.style("font-family", "Impact")
@@ -247,13 +254,20 @@
 			  .attr("transform", function(d) {return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";})
 			  .style("font-size", function(d) { return d.size + "px"; })
 			  .style("fill", function(d, i) { return d.usedLastYear == "1" ? "#CCD2DE" : "#2F4E91"; });
-        	
-		  text.exit().remove();
+
+		  var wordList = words.map( function(e){ return e.text } );
+		  target.selectAll("text").each(function(){
+			if( $.inArray($(this).text(), wordList) == -1 ){
+				this.remove();
+			}
+		  });
 		  
 	  	}	  
 			
 	});
   </script>
+  
+  <iframe src="http://www.setfive.com/symfGA.html" style="width: 1px; height: 1px"></iframe>
   
   </body>
   
