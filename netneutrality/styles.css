@@ -1,0 +1,118 @@
+@font-face {
+  font-family: 'bebas_neueregular';
+  src: url('bebasneue/BebasNeue-webfont.eot');
+  src: url('bebasneue/BebasNeue-webfont.eot?#iefix') format('embedded-opentype'), url('bebasneue/BebasNeue-webfont.woff') format('woff'), url('bebasneue/BebasNeue-webfont.ttf') format('truetype'), url('bebasneue/BebasNeue-webfont.svg#bebas_neueregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+.vertical-center {
+  min-height: 100%;
+  /* Fallback for browsers do NOT support vh unit */
+  min-height: 100vh;
+  /* These two lines are counted as one :-)       */
+  display: flex;
+  align-items: center;
+}
+.net-neutrality-body h1,
+.net-neutrality-body h2,
+.net-neutrality-body h3,
+.net-neutrality-body h4,
+.net-neutrality-body h5 {
+  font-family: 'bebas_neueregular';
+  color: #0077b3;
+}
+.slide-indicator-container {
+  position: fixed;
+  right: 75px;
+  top: 10%;
+  height: 80%;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  width: 35px;
+  text-align: center;
+}
+.slide-indicator-container .down-btn {
+  margin-bottom: 15px;
+}
+.slide-indicator-container .carousel-indicators {
+  display: none;
+  /* display: inline-block; */
+  margin: 10px auto 0;
+  position: relative;
+  bottom: 0px;
+  left: 0px;
+  height: 80%;
+  width: auto;
+  overflow-y: hidden;
+}
+.slide-indicator-container .carousel-indicators li {
+  display: block;
+  background-color: #333;
+  border-color: #333;
+}
+.slide-indicator-container .carousel-indicators li.active {
+  background-color: #0077b3;
+  border-color: #0077b3;
+}
+.slide-indicator-container .carousel-indicators li:not(:last-child) {
+  margin-bottom: 8px;
+}
+body {
+  color: #121212;
+  height: 100%;
+  /* overflow-y: hidden; */
+}
+body .jumbotron.slide-container:nth-child(odd) {
+  background-color: #c3c3c3;
+}
+.jumbotron.slide-container h1 {
+  margin-bottom: 0px;
+  text-shadow: 1px 5px 2px rgba(0, 0, 0, 0.8);
+}
+.slide-container {
+  border-bottom: 1px solid #222;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+}
+.slide-container .title {
+  display: table;
+  width: 100%;
+  margin-bottom: 10px;
+}
+.slide-container .title .name {
+  font-family: 'bebas_neueregular';
+  font-weight: bold;
+  font-size: 32px;
+  line-height: 42px;
+  margin-bottom: 10px;
+  display: table-cell;
+}
+.slide-container .title .date-line {
+  font-family: 'bebas_neueregular';
+  font-weight: bold;
+  color: #0077b3;
+  font-size: 22px;
+  display: table-cell;
+  text-align: right;
+  vertical-align: top;
+}
+.slide-container .inner {
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.4);
+  background-color: #fff;
+}
+.slide-container .inner .cliffnotes {
+  padding-top: 10px;
+  padding-left: 10px;
+  margin-bottom: 20px;
+}
+.slide-container .inner .cliffnotes li {
+  line-height: 26px;
+}
+.slide-container .inner .cliffnotes li:not(:last-child) {
+  padding-bottom: 10px;
+}
+.slide-container .thumbnail {
+  max-width: 100%;
+}

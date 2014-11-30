@@ -1,0 +1,156 @@
+@grey: #C3C3C3;
+@darkYellow: #F39708;
+@blue: #0077b3;
+@black: #121212;
+
+@font-face {
+    font-family: 'bebas_neueregular';
+    src: url('bebasneue/BebasNeue-webfont.eot');
+    src: url('bebasneue/BebasNeue-webfont.eot?#iefix') format('embedded-opentype'),
+         url('bebasneue/BebasNeue-webfont.woff') format('woff'),
+         url('bebasneue/BebasNeue-webfont.ttf') format('truetype'),
+         url('bebasneue/BebasNeue-webfont.svg#bebas_neueregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.vertical-center {
+  min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+  min-height: 100vh; /* These two lines are counted as one :-)       */
+  display: flex;
+  align-items: center;
+}
+
+.net-neutrality-body {
+  h1, h2, h3, h4, h5 {
+    font-family: 'bebas_neueregular';
+    color: @blue;
+  }
+}
+
+.slide-indicator-container {
+  position: fixed;
+  right: 75px;
+  top: 10%;
+  height: 80%;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  width: 35px;
+  text-align: center;
+  
+  .down-btn {
+    margin-bottom: 15px;
+  }
+  
+  .carousel-indicators {
+    display: none;
+    /* display: inline-block; */
+    margin: 10px auto 0;
+    position: relative;
+    bottom: 0px;
+    left: 0px;
+    height: 80%;
+    width: auto;
+    overflow-y: hidden;    
+    
+    li {
+      display: block;
+      background-color: #333;
+      border-color: #333;        
+    }
+    
+    li.active {
+      background-color: @blue;
+      border-color: @blue;
+    }
+    
+    li:not(:last-child) {
+      margin-bottom: 8px;
+    }
+    
+  }
+}
+
+body {
+  color: @black;
+  height: 100%;
+  /* overflow-y: hidden; */
+  
+  .jumbotron.slide-container:nth-child(odd) {
+    background-color: @grey;
+  }
+  
+  .jumbotron.slide-container:nth-child(even) {
+  
+  }
+  
+}
+
+.jumbotron.slide-container {  
+
+  h1 {
+    margin-bottom: 0px;
+    text-shadow: 1px 5px 2px rgba(0, 0, 0, 0.8);
+  }
+  
+}
+
+.slide-container {  
+  
+  border-bottom: 1px solid #222;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  
+  .title {
+    
+    display: table;
+    width: 100%;
+    margin-bottom: 10px;
+    
+    .name {
+      font-family: 'bebas_neueregular';
+      font-weight: bold;
+      font-size: 32px;
+      line-height: 42px;
+      margin-bottom: 10px;
+      display: table-cell;
+    }
+    
+    .date-line {
+      font-family: 'bebas_neueregular';
+      font-weight: bold;
+      color: @blue;
+      font-size: 22px;
+      display: table-cell;
+      text-align: right;
+      vertical-align: top;  
+    }
+    
+  }
+   
+  .inner {
+    padding: 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.30), 0 2px 8px rgba(0, 0, 0, 0.40);
+    background-color: #fff;
+    
+    .cliffnotes {
+      padding-top: 10px;
+      padding-left: 10px;
+      margin-bottom: 20px;
+      
+      li {
+        line-height: 26px;
+      }
+      
+      li:not(:last-child) {
+        padding-bottom: 10px;
+      }
+    }
+  }
+  
+  .thumbnail {
+    max-width: 100%;
+  }  
+  
+}
