@@ -85,7 +85,7 @@
     }
     
     function syncIndicator(){
-      var percentDone = Math.round( (slideIndex / MAX_SLIDES) * 100 );
+      var percentDone = Math.ceil( (slideIndex / MAX_SLIDES) * 100 );
       $("#loadingbar").css( {width: percentDone + "%"} );    
     }
     
