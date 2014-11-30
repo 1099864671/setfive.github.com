@@ -32,7 +32,7 @@
   position: fixed;
   right: 75px;
   top: 10%;
-  height: 80%;
+  height: auto;
   overflow-y: hidden;
   overflow-x: hidden;
   width: 35px;
@@ -111,8 +111,8 @@ body {
     .name {
       font-family: 'bebas_neueregular';
       font-weight: bold;
-      font-size: 32px;
-      line-height: 42px;
+      font-size: 2em;
+      line-height: 120%;
       margin-bottom: 10px;
       display: table-cell;
     }
@@ -121,7 +121,8 @@ body {
       font-family: 'bebas_neueregular';
       font-weight: bold;
       color: @blue;
-      font-size: 22px;
+      font-size: 1.25em;
+      line-height: 120%;
       display: table-cell;
       text-align: right;
       vertical-align: top;  
@@ -152,5 +153,40 @@ body {
   .thumbnail {
     max-width: 100%;
   }  
+  
+}
+
+@media (max-width: 480px) { 
+  .container {
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+  
+  .slide-indicator-container {
+    top: auto;
+    bottom: 10px;
+    right: 10px;
+    z-index: 100;
+  }
+  
+  .jumbotron.slide-container h1 {
+    text-shadow: none;
+  }
+  
+  .slide-container .title {
+    .name, .date-line {
+      display: block;
+    }
+    .date-line {
+      text-align: left;
+    }    
+  }
+  
+  .thumbnail-container {    
+    .thumbnail {
+      max-width: 200px;
+      margin: auto;
+    }
+  }
   
 }

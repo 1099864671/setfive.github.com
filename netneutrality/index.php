@@ -41,17 +41,22 @@
          <div class="col-md-12 text-center">
            <h1>Net Neutrality: Back to the future</h1>
            <p>Explore the bills, court cases, and disagreements that led up to today.</p>
+           <p>You can navigate with &#8593; and &#8595;</p>
          </div>    
       </div>
       
       <div class="slide-indicator-container">
         <a href="#up" data-provide="indicator-navigate" class="down-btn btn btn-xs btn-default"><span class="glyphicon glyphicon-chevron-up"></span></a>
-        <ol class="carousel-indicators">
-          <li data-provide="slide-navigate" data-index="0" class="active"></li>
-          <?php foreach( range(1, 54) as $i ): ?>
-            <li data-provide="slide-navigate" data-index="<?php echo $i; ?>"></li>
-          <?php endforeach; ?>          
-        </ol>
+        
+        <?php if(0): ?>
+          <ol class="carousel-indicators">
+            <li data-provide="slide-navigate" data-index="0" class="active"></li>
+            <?php foreach( range(1, 54) as $i ): ?>
+              <li data-provide="slide-navigate" data-index="<?php echo $i; ?>"></li>
+            <?php endforeach; ?>          
+          </ol>
+        <?php endif; ?>
+        
         <a href="#down" data-provide="indicator-navigate" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-chevron-down"></span></a>
       </div>
       
