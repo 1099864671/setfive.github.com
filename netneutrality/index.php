@@ -36,8 +36,25 @@
     
     <div id='loadingbar'><dt/><dd/></div>
     
-    <div class="jumbotron slide-container vertical-center">
+    <div class="header">
       <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <a href="http://www.setfive.com" target="_blank"><img class="logo" src="logo_noconsulting.png" /></a>
+          </div>
+          <div class="col-md-8 text-right">
+            <ul class="links list-unstyled list-inline">
+              <li><a href="http://www.twitter.com/setfive" target="_blank">@setfive</a></li>
+              <li> | </li>
+              <li><a href="https://github.com/Setfive/setfive.github.com/tree/master/netneutrality" target="_blank">GitHub</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="jumbotron slide-container vertical-center">
+      <div class="container">      
          <div class="col-md-12 text-center">
            <h1>Net Neutrality: Back to the future</h1>
            <p>Explore the bills, court cases, and disagreements that led up to today.</p>

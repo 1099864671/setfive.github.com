@@ -13,6 +13,25 @@
   display: flex;
   align-items: center;
 }
+.header {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  height: 40px;
+  width: 100%;
+  background-color: rgba(3, 3, 3, 0.7);
+  color: #fafafa;
+}
+.header .logo {
+  margin-top: 8px;
+}
+.header .links {
+  margin: 10px 0 0;
+}
+.header .links a {
+  color: #fafafa;
+  font-family: "Source Sans Pro", Calibri, Candara, Arial, sans-serif;
+}
 .net-neutrality-body h1,
 .net-neutrality-body h2,
 .net-neutrality-body h3,
@@ -24,7 +43,7 @@
 .slide-indicator-container {
   position: fixed;
   right: 75px;
-  top: 10%;
+  top: 60px;
   height: auto;
   overflow-y: hidden;
   overflow-x: hidden;
@@ -118,6 +137,9 @@ body .jumbotron.slide-container:nth-child(odd) {
   max-width: 100%;
 }
 @media (max-width: 480px) {
+  .header {
+    display: none;
+  }
   .container {
     margin-top: 30px;
     margin-bottom: 30px;
