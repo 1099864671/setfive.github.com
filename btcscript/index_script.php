@@ -140,7 +140,7 @@ data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0
                     </a>
                 </div>                
                 
-                <div class="form-group hidden">
+                <div class="form-group">
                   <label for="btcScript">Script</label>
                   <textarea name="btcScript" id="btcScript" class="form-control"></textarea>
                 </div>
@@ -282,6 +282,7 @@ data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0
         var output = _.findWhere(form, {name: "destAddr"}).value;
         var outputAmnt = _.findWhere(form, {name: "sendAmnt"}).value;
         var noOpData = _.findWhere(form, {name: "noOpData"}).value;
+        var script = _.findWhere(form, {name: "btcScript"}).value;
         
         var blanks = _.reduce([input, inputIndex, output, outputAmnt], 
                         function(numBlank, val){ return val.length > 0 ? numBlank : numBlank + 1; }, 0);
@@ -315,17 +316,25 @@ data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0
             
             if(nullScript){
               tx.addOutput(nullScript, 0);
-            }else{
-              tx.addOutput(output, outputAmnt);              
             }                        
+                        
+            if(output.length){
+              tx.addOutput(output, outputAmnt);
+            }
+            
+            if(script.length){
+              var btcScript = bitcoin.Script.fromASM(script);
+              // tx.addOutput(btcScript, outputAmnt);
+            }            
             
             tx.sign(0, key);            
             hexTx = tx.build().toHex();
+            
           }catch(e){
             $("[data-provide='send-loader']").addClass("hidden");
             $("[data-provide='send-info']").html( "ERROR: " + e.message ).removeClass("hidden");
             return false;
-          }          
+          }                    
           
           Chain.sendTransaction(hexTx).done(function(data){
           
