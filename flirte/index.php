@@ -1,3 +1,5 @@
+<?php require_once 'lob.php'; ?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -117,7 +119,7 @@
     <div class="container template-container">
       <div class="row">
         <div class="col-md-3 sidebar">
-          <h3>Select a Template</h3>
+          <h4>Select a Template</h4>
                     
           <table class="table">
             <tr>
@@ -126,21 +128,18 @@
             </tr>
           </table>
           
-          <h3>Add Some Text</h3>
+          <h4>Add Some Text</h4>
           
           <form data-provide="text-form">
             <div class="form-group">
-              <label for="text">Text</label>
-              <input type="text" class="form-control" id="text" placeholder="Enter your text...">
+              <textarea class="form-control" class="postcard-text" name="added-text"></textarea>
+            </div>                             
+            <div class="form-group">
+              <button type="submit" class="btn btn-default">Update</button>
             </div>
-            <div class="form-group">
-              <label for="font">Font size</label>
-              <input type="number" step="1" class="form-control" id="font" placeholder="Enter a font size..." value="14">
-            </div>                  
-            <div class="form-group">
-              <button class="btn btn-default">Save</button>
-            </div>    
-          </form>
+            
+            <p>All set? You just need to fill out the address details down below.</p>
+          </form>          
           
         </div>
         <div class="col-md-9">
@@ -154,6 +153,66 @@
         </div>
       </div>
     </div>
+    
+    <div class="container address-container">
+    
+    	<form method="POST" action="sendCard.php" data-provide="address-form" class="form-horizontal">
+    	
+	    	<div class="row">
+	    		<div class="col-md-6">
+	    			<h4>Your Address</h4>    			
+	    				<?php echo Lob::getAddressForm("from"); ?>    			    
+	    		</div>
+	    	</div>
+    	
+	    	<div class="row their-address">
+	    		<div class="col-md-6">
+	    			<h4>Their Address</h4>
+	    				<?php echo Lob::getAddressForm("to"); ?>  			
+	    		</div>
+	    	</div> 
+
+	    	<div class="row their-address">
+	    		<div class="col-md-6">
+	    			<h4>Your Email Address</h4>
+	    			<div class="form-group">
+	    				<div class="col-sm-10 col-sm-offset-2">
+	    					<input type="email" name="email" id="email" class="form-control">
+	    					<span class="help-block">We'll send you a confirmation email once your postcard is processed.</span>
+    					</div>
+	    			</div>
+	    			
+	    			<div class="alert alert-warning text-center hidden" data-provide="email-error">
+	    				Sorry! That isn't a valid email address.
+	    			</div>
+	    			
+	    		</div>
+    		</div>
+    	  	
+    	  	<input type="hidden" name="added-text" />
+    	  	<input type="hidden" name="selected-template" />
+    	  	
+    	</form>
+    </div>
+        
+    <div class="container copy-container">
+      <div class="row">  
+        <div class="col-md-6 col-md-offset-3 text-center">
+        	<h3>Ready to rock?</h3>
+        	<a data-provide="send" href="#" class="btn btn-lg btn-default big-btn">Fire away!</a>
+        </div>
+      </div>
+    </div>
+        
+	<div class="footer-container">
+		<div class="container">
+			<div class="row">
+	    		<div class="col-md-12 text-center">
+	    			Made with love in Cambridge, MA by <a href="http://www.setfive.com">Setfive</a>
+	    		</div>
+	    	</div>
+		</div>        
+	</div>	           
     
     <script>
       $(document).ready(function(){        
@@ -177,21 +236,60 @@
         },false);
         
         function draw(v, c, w, h) {
+        
             if(v.paused || v.ended) {
               return false;
             }
             
-            ctx.drawImage(v, 0, 0, w, h);
-            setTimeout(draw, 20, v, c, w, h);
+            var videoHeight = v.videoHeight;
+            var videoWidth = v.videoWidth;
+            
+            var targetWidth = 0;
+            var targetHeight = 0;
+            
+            if( w > h ){
+              targetHeight = h;
+              targetWidth = (h * v.videoWidth) / v.videoHeight;
+            }else{
+              targetWidth = w;
+              targetHeight = (w * v.videoHeight) / v.videoWidth;
+            }
+                        
+            // console.log( targetWidth + " : " + targetHeight );
+                        
+            ctx.drawImage(v, 0, 0, targetWidth, targetHeight);
+            // setTimeout(draw, 20, v, c, targetWidth, targetHeight);
         }
-                
+
+        $("[data-provide='address-form']").submit(function(){
+            return false;
+        });
+        
+        $("[data-provide='send']").click(function(){
+            var email = $("#email").val();
+            var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;            
+
+            $("[data-provide='email-error']").addClass("hidden");
+            
+            if(!re.test(email)){
+                $("[data-provide='email-error']").removeClass("hidden");
+                return false;
+            }
+
+            $("[data-provide='address-form'] [name='added-text']").val( $("[data-provide='text-form'] [name='added-text']").val() );
+            
+            $("[data-provide='address-form']").off("submit");            
+            $("[data-provide='address-form']").submit();
+            
+            return false;
+        });
+               
       });
-    </script>
-    
+    </script>   
   
   <div class="hidden">  
     <video id="tswiftVideo" autoplay loop>
-        <source src="https://s3.amazonaws.com/setfive-public/mystery.webm" type="video/webm">
+        <source src="https://s3.amazonaws.com/setfive-public/10things.webm" type="video/webm">
     </video>
   </div>
   
