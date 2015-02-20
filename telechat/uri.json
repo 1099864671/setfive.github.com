@@ -1,0 +1,25 @@
+{
+  "hashname": "h7nfv3gb6ypjmmvcis34wqwysvrg5rgmykzqwvylluld6qhrxnna",
+  "paths": [
+    {
+      "type": "udp4",
+      "ip": "10.142.253.45",
+      "port": 42424
+    },
+    {
+      "type": "http",
+      "url": "http://10.142.253.45:38515"
+    },
+    {
+      "type": "tcp4",
+      "ip": "10.142.253.45",
+      "port": 42424
+    }
+  ],
+  "keys": {
+    "1a": "aon542pz25fjh7h5hxrlhe5poyffcrl75e",
+    "2a": "gcbacirqbudaskugjcdpodibaeaqkaadqiaq6abqqiaquaucaeaqbzk6eon52ii4yarc4hrrqsioel4ezt7xh6hwxvypzuvztmb5g4yzbr732fkggkt6c6hvjfl3hp6farfhuralztn3nynulldtiy6nzlnowtgi6b6bpwbxcwuz2wlvnv5nebxxc4cfpwkhqca4vx56ftb3wkaitlwnnfesfb67zwgdmqzshaqcxxklnrwz22ybquwjihu4njijqwjfslas4yzbhieskrfmklahoq4duuvqqxh3ok3e6jdayr5w43vx5xjd2345xxupyqor3zgn3677c6v6dtg5dq6rggyr3yxgurtsyxwlcmdcpozf564chpx5gkejkdcl32rmyemfujmaetvscwh4gs6s2rl6x6cyy6rnkbm5g5cmmrwukzyrcmhit2mkhkquqwq6otup2agnigicamaqaai",
+    "3a": "cphaxd2h6tnnat3b5q25qvdvfm5ay3iwb3swccmwkmg4nts4w5hq"
+  },
+  "router": true
+}
