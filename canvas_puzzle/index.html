@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Lato:400,700,900' rel='stylesheet' type='text/css'>
+    
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="underscore-min.js"></script>    
+    <script src="fabric.min.js"></script>
+    
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+    <style>
+      * { 
+        margin:0; 
+        padding:0; 
+      }
+      
+      html, body {
+       width:100%; 
+       height:100%; 
+      }
+      
+      canvas { 
+        display:block; 
+      }
+      
+      .main-container {
+      	margin-top: 40px;
+      }
+      
+      #shuffle {
+      	position: absolute;
+      	top: 0px;
+      	right: 0px;
+      }
+    </style>    
+  </head>
+  <body>
+  	
+  	<div class="container main-container">
+  		<div class="col-md-12">
+  			
+  			<button class="btn btn-primary" id="shuffle">Shuffle</button>
+  			
+  			<canvas id="canvas"></canvas>
+  	    
+  			<canvas style="margin-top: 40px" id="clippingCanvas"></canvas>
+		</div>  	       
+    </div>
+    
+    <script type="text/javascript">
+    
+      var fc = new fabric.Canvas("canvas", {backgroundColor: 'rgb(0, 0, 0)'});
+      
+      fc.setWidth(800);
+      fc.setHeight(600);                 
+   	  fc.renderAll();
+   	     	  
+   	  var canvas = document.getElementById("clippingCanvas"), ctx = canvas.getContext('2d');
+   	  var copiedCanvas = document.createElement("canvas"), copiedCtx = copiedCanvas.getContext('2d');
+   	  var pieceWidth = 100, pieceHeight = 100;   	  
+   	  
+   	  copiedCanvas.width = pieceWidth;
+   	  copiedCanvas.height = pieceHeight;
+   	  
+   	  canvas.width = 800;
+   	  canvas.height = 600;   	  
+   	  
+   	  var fabricImages = [];
+   	  
+   	  $("#shuffle").click(function(){
+   		  
+   		  var onChange = function(){
+   			  
+  		    window.requestAnimationFrame(function(){
+  		    	fc.renderAll.bind(fc)();
+   			});
+   			
+   		  };
+   		  
+   		  $.each(fabricImages, function(i, img){
+   			  var left = Math.floor((Math.random() * 800 - 50) + 0); 
+   			  var top = Math.floor((Math.random() * 600 - 50) + 0);
+   			  img.animate({left: left, top: top}, {onChange: onChange});
+   		  });
+   		  
+   		  return false;
+   	  });
+   	  
+   	  function copyImageChunk(x, y){
+   		     		  
+   		  copiedCtx.clearRect(0, 0, pieceWidth, pieceHeight);
+   		  copiedCtx.putImageData(ctx.getImageData(x, y, pieceWidth, pieceHeight), 0, 0);
+   		  
+   		  fabric.Image.fromURL(copiedCanvas.toDataURL("image/png"), function(img) { 
+   			  
+   			  img.set("hasBorders", true);
+   			  img.set("borderColor", "rgb(255, 255, 255)");
+   			  img.set("left", x);
+   			  img.set("top", y);
+   			  img.set("scaleX", ".9");
+   			  img.set("scaleY", ".9")
+   			  
+   			  img.hasControls = false;
+   			  img.lockRotation = true;
+   			  img.lockScalingX = true; img.lockScalingY = true;
+   			  
+   			  fc.add(img);
+   			  fabricImages.push(img);   			  
+   		  });
+   		  
+   	  }
+   	  
+   	  function drawImage(image){
+   		  
+   		  /*
+   		  ctx.save();
+   	   	  ctx.beginPath();
+   	   	  ctx.rect( 25, 25, 100, 100);
+   	   	  ctx.clip();
+   	   	  ctx.closePath();   		  
+   		  */
+   		  
+   		  ctx.drawImage(image, 0, 0, 800, 600);
+   		     		  
+   		  for(var i = 0; i < 800; i += pieceWidth){
+   			for(var j = 0; j < 600; j += pieceHeight){
+   		  		copyImageChunk(i, j);   		  		   		  		
+   			}
+   		  }
+   		  
+   	  }
+   	  
+   	  var img = new Image();
+   	  img.src = "beaconhill.jpg";
+   	  img.addEventListener("load", function(){ drawImage(this) });
+   	   	  
+    </script>
+    
+  </body>
+ </html>
