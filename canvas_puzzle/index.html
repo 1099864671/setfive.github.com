@@ -60,11 +60,29 @@
   	    
   			<canvas style="margin-top: 40px" id="clippingCanvas"></canvas>
 		</div>  	       
-    </div>
+    </div>    
     
     <script type="text/javascript">
-    
+      var piece1 = new Image();
+      piece1.src = "piece1.png";
+
+      var piece2 = new Image();
+      piece2.src = "piece2.png";
+      
       var fc = new fabric.Canvas("canvas", {backgroundColor: 'rgb(0, 0, 0)'});
+      
+      fc.on("object:moving", function(el){
+    	 var tl = Math.pow(el.target.getLeft() - el.target.originalCoords[0], 2);    	 
+    	 var tt = Math.pow((el.target.getTop() - el.target.originalCoords[1]), 2);    	 
+    	 
+    	 if( Math.sqrt(tl + tt) < 10 ){
+    		 el.target.set("left", el.target.originalCoords[0]);
+    		 el.target.set("top", el.target.originalCoords[1]);    		 
+    		 el.target.set("lockMovementX", true);
+    		 el.target.set("lockMovementY", true);
+    		 el.target.set("opacity", .6);
+    	 }
+      });
       
       fc.setWidth(800);
       fc.setHeight(600);                 
@@ -72,10 +90,15 @@
    	     	  
    	  var canvas = document.getElementById("clippingCanvas"), ctx = canvas.getContext('2d');
    	  var copiedCanvas = document.createElement("canvas"), copiedCtx = copiedCanvas.getContext('2d');
+   	  var maskCanvas = document.createElement("canvas"), maskCanvasCtx = maskCanvas.getContext('2d');
+   	
    	  var pieceWidth = 100, pieceHeight = 100;   	  
    	  
    	  copiedCanvas.width = pieceWidth;
    	  copiedCanvas.height = pieceHeight;
+   	  
+   	  maskCanvas.width = pieceWidth;
+   	  maskCanvas.height = pieceHeight;
    	  
    	  canvas.width = 800;
    	  canvas.height = 600;   	  
@@ -101,55 +124,70 @@
    		  return false;
    	  });
    	  
-   	  function copyImageChunk(x, y){
+   	  function copyImageChunk(x, y, p){
    		     		  
-   		  copiedCtx.clearRect(0, 0, pieceWidth, pieceHeight);
-   		  copiedCtx.putImageData(ctx.getImageData(x, y, pieceWidth, pieceHeight), 0, 0);
+   		  maskCanvasCtx.clearRect(0, 0, pieceWidth, pieceHeight);
+   		  maskCanvasCtx.putImageData(ctx.getImageData(x, y, pieceWidth, pieceHeight), 0, 0);
+   		  
+   		  copiedCtx.clearRect(0, 0, pieceWidth, pieceHeight);   		  
+   		  
+   		  copiedCtx.globalCompositeOperation = "source-over";
+   		  copiedCtx.drawImage(p, 0, 0, 100, 100);
+   		  
+   		  copiedCtx.globalCompositeOperation = "source-in";  		  
+   		  copiedCtx.drawImage(maskCanvas, 0, 0, 100, 100);
    		  
    		  fabric.Image.fromURL(copiedCanvas.toDataURL("image/png"), function(img) { 
    			  
-   			  img.set("hasBorders", true);
+   			  /*   			  
    			  img.set("borderColor", "rgb(255, 255, 255)");
+   			  img.set("scaleX", ".9");
+ 			  img.set("scaleY", ".9")   			  
+   			  */
+   			     			  
+   			  img.set("hasBorders", false);
    			  img.set("left", x);
    			  img.set("top", y);
-   			  img.set("scaleX", ".9");
-   			  img.set("scaleY", ".9")
-   			  
+   			     			     			  
    			  img.hasControls = false;
    			  img.lockRotation = true;
-   			  img.lockScalingX = true; img.lockScalingY = true;
-   			  
+   			  img.lockScalingX = true; img.lockScalingY = true;   			  
+   			  img.originalCoords = [x, y];
+   			
    			  fc.add(img);
-   			  fabricImages.push(img);   			  
+   			  fabricImages.push(img);   			     			  
    		  });
    		  
    	  }
    	  
    	  function drawImage(image){
-   		  
-   		  /*
-   		  ctx.save();
-   	   	  ctx.beginPath();
-   	   	  ctx.rect( 25, 25, 100, 100);
-   	   	  ctx.clip();
-   	   	  ctx.closePath();   		  
-   		  */
+   		     		  
+   		  var iC = 0, jC = 0;
+   		  var pieces = [piece2, piece1, piece2];
    		  
    		  ctx.drawImage(image, 0, 0, 800, 600);
-   		     		  
+   		  
    		  for(var i = 0; i < 800; i += pieceWidth){
+   			  
    			for(var j = 0; j < 600; j += pieceHeight){
-   		  		copyImageChunk(i, j);   		  		   		  		
+   				
+   		  		copyImageChunk(i, j, pieces[jC]);   		  		
+   		  		jC += 1;
+   		  		
+   		  		if( jC == 2 ){
+   		  			jC = 0;
+   		  		}
    			}
+   			
    		  }
    		  
    	  }
    	  
    	  var img = new Image();
    	  img.src = "beaconhill.jpg";
-   	  img.addEventListener("load", function(){ drawImage(this) });
+   	  img.addEventListener("load", function(){ drawImage(this); });
    	   	  
     </script>
-    
+        
   </body>
  </html>
