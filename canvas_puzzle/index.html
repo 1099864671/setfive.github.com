@@ -24,14 +24,11 @@
     <![endif]-->
     
     <style>
-      * { 
-        margin:0; 
-        padding:0; 
-      }
       
       html, body {
-       width:100%; 
-       height:100%; 
+       width: 100%; 
+       height: 100%; 
+       background-color: #000;
       }
       
       canvas { 
@@ -40,13 +37,18 @@
       
       .main-container {
       	padding: 20px;
-      	background: #000;     	
+      	background: #000;
+      	margin-top: 40px;     	
       }            
                   
       #shuffle {
       	position: absolute;
       	top: 0px;
       	right: 0px;
+      }
+      
+      .canvas-container {
+      	margin: auto;
       }
     </style>    
   </head>
@@ -70,6 +72,10 @@
       var fabricImages = [];
       
       fc.on("object:moving", function(el){
+    	 if( !el.target.originalCoords ){
+    		 return;
+    	 }
+    	 
     	 var tl = Math.pow(el.target.getLeft() - el.target.originalCoords[0], 2);    	 
     	 var tt = Math.pow((el.target.getTop() - el.target.originalCoords[1]), 2);    	 
     	 
@@ -79,6 +85,7 @@
     		 el.target.set("lockMovementX", true);
     		 el.target.set("lockMovementY", true);
     		 el.target.set("opacity", .6);
+    		 el.target.isCorrect = true;
     	 }
       });
       
@@ -112,9 +119,12 @@
    			     			     			  
    			  img.hasControls = false;
    			  img.lockRotation = true;
-   			  img.lockScalingX = true; img.lockScalingY = true;   			  
+   			  img.lockScalingX = true; 
+   			  img.lockScalingY = true;   			  
+   			  
    			  img.originalCoords = [x, y];
-   			
+   			  img.isCorrect = false;
+   			  
    			  fc.add(img);
    			  fabricImages.push(img);   			     			  
    		  });   		  
@@ -133,13 +143,16 @@
    		  var targetHeight, targetWidth;   		     		  
    		     		  
    		  if( imageHeight / imageWidth < window.innerHeight / window.innerWidth ){   			  
-   			  targetWidth = window.innerWidth;
+   			  targetWidth = window.innerWidth - 40;
    			  targetHeight = Math.floor( (targetWidth * imageHeight) / imageWidth );   			  
    		  }else{
-   			  targetHeight = window.innerHeight;
+   			  targetHeight = window.innerHeight - 40;
    			  targetWidth = Math.floor( (targetHeight * imageWidth) / imageHeight );
    		  }   		  
    		  
+   	      fc.setWidth( targetWidth * 1.05 );
+   	      fc.setHeight( targetHeight * 1.05 );
+   	         		  
    		  var cornerLeft = getImg(loadedImages, "1.png").width * .7, cornerRight = getImg(loadedImages, "9.png").width * .7;   		  
    		  var midLeft = getImg(loadedImages, "2.png").width * .7, midRight = getImg(loadedImages, "3.png").width * .7;   		  
    		  var middleSide = getImg(loadedImages, "4.png").width * .73, cornerBottom = getImg(loadedImages, "7.png").width * .73;
@@ -178,12 +191,23 @@
    		  
    		  ctx.drawImage(puzzleImage, 0, 0, targetWidth, targetHeight);
    		  
+   		  var border = new fabric.Rect({
+   			 top: 0, left: 0, width: targetWidth, 
+   			 height: targetHeight, stroke: "white", 
+   			 hasControls: false, lockRotation: true, 
+   			 lockMovementX: true, lockMovementY: true, 
+   			 hasBorders: false	 
+   		  });
+   		  
+   		  fc.add(border);
+   		  
    		  return piecesGrid;   		     		   		  
    	  }
    	  
    	  function iterativeCopy(res){
    		  
    		  if( res.i >= res.piecesGrid.length && res.j == 0 ){
+   			  fc.renderAll();
    			  return false;
    		  }
    		     		  
@@ -317,12 +341,14 @@
 	   			});   			
 	   		  };
 	   		  
-	   		  $.each(fabricImages, function(i, img){
+	   		  _(fabricImages)
+	   		    .filter({isCorrect: false})
+	   		    .forEach(function(img){
 	   			  var left = Math.floor((Math.random() * 800 - 50) + 0); 
 	   			  var top = Math.floor((Math.random() * 600 - 50) + 0);
-	   			  img.animate({left: left, top: top}, {onChange: onChange});
-	   		  });
-	   		  
+	   			  img.animate({left: left, top: top}, {onChange: onChange});	   			  
+	   		  }).value();
+	   		  	   		  
 	   		  return false;
 	   	  });
       
