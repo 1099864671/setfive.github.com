@@ -13,7 +13,7 @@
         
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
-    <script src="underscore-min.js"></script>    
+    <script src="lodash.min.js"></script>    
     <script src="fabric.min.js"></script>
     
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -39,9 +39,11 @@
       }
       
       .main-container {
-      	margin-top: 40px;
-      }
-      
+      	padding: 20px;
+      	background: #000;
+      	display: none;     	
+      }            
+                  
       #shuffle {
       	position: absolute;
       	top: 0px;
@@ -51,18 +53,21 @@
   </head>
   <body>
   	
+  	<div class="main-container">
+  		<canvas id="canvas"></canvas>
+  	</div>
+  	
   	<div class="container main-container">
   		<div class="col-md-12">
   			
-  			<button class="btn btn-primary" id="shuffle">Shuffle</button>
-  			
-  			<canvas id="canvas"></canvas>
-  	    
-  			<canvas style="margin-top: 40px" id="clippingCanvas"></canvas>
+  			<button class="btn btn-primary" id="shuffle">Shuffle</button>  			  			
+  	      			
 		</div>  	       
     </div>    
     
-    <script type="text/javascript">
+    <canvas style="margin-top: 40px; margin-bottom: 40px;" id="clippingCanvas"></canvas>
+    
+    <script type="text/javascript">    
       var piece1 = new Image();
       piece1.src = "piece1.png";
 
@@ -84,8 +89,8 @@
     	 }
       });
       
-      fc.setWidth(800);
-      fc.setHeight(600);                 
+      fc.setWidth( window.innerWidth - 40 );
+      fc.setHeight( window.innerHeight - 40 );                 
    	  fc.renderAll();
    	     	  
    	  var canvas = document.getElementById("clippingCanvas"), ctx = canvas.getContext('2d');
@@ -100,8 +105,8 @@
    	  maskCanvas.width = pieceWidth;
    	  maskCanvas.height = pieceHeight;
    	  
-   	  canvas.width = 800;
-   	  canvas.height = 600;   	  
+   	  canvas.width = window.innerWidth;
+   	  canvas.height = window.innerHeight;   	  
    	  
    	  var fabricImages = [];
    	  
@@ -181,12 +186,189 @@
    			
    		  }
    		  
-   	  }
+   	  }   	  
    	  
-   	  var img = new Image();
-   	  img.src = "beaconhill.jpg";
-   	  img.addEventListener("load", function(){ drawImage(this); });
-   	   	  
+   	  function setup(loadedImages, puzzleImage){   		  
+   		     		  
+   		  var imageHeight = puzzleImage.height, imageWidth = puzzleImage.width;   		   		     		
+   		  var targetHeight, targetWidth;   		     		  
+   		     		  
+   		  if( imageHeight / imageWidth < window.innerHeight / window.innerWidth ){   			  
+   			  targetWidth = window.innerWidth;
+   			  targetHeight = Math.floor( (targetWidth * imageHeight) / imageWidth );   			  
+   		  }else{
+   			  targetHeight = window.innerHeight;
+   			  targetWidth = Math.floor( (targetHeight * imageWidth) / imageHeight );
+   		  }   		  
+   		  
+   		  var getImg = function(el){
+   			  			  return _.find(loadedImages, function(e){return $(e).attr("src") == "puzzle_pieces/" + el;})
+   			  			};
+   			  			
+   		  var cornerLeft = getImg("1.png").width * .7, cornerRight = getImg("9.png").width * .7;
+   		  var midLeft = getImg("2.png").width * .7, midRight = getImg("3.png").width * .7;   		  
+   		  var middleSide = getImg("4.png").width * .73, cornerBottom = getImg("7.png").width * .73;
+   		  
+   		  var numWide = 2 + (Math.ceil((targetWidth - (cornerLeft + cornerRight)) / (midLeft + midRight)) * 2);
+   		  var cornerLeftHeight = getImg("1.png").width * .92;
+   		  var numHeight = Math.ceil((targetHeight - (cornerLeftHeight + cornerBottom)) / middleSide);   		     		     		  
+   		     		  
+   		  var filledGrid = ["4.png"], piecesGrid = [ ["1.png"] ], lastGrid = ["7.png"];
+   		  
+   		  for(var j = 1; j < numWide - 1; j++){
+   			
+   			if(j % 2 == 0){
+   				filledGrid.push("6.png");
+   				lastGrid.push("12.png");
+   				
+   				piecesGrid[0].push("3.png");   				
+   			}else{
+   				filledGrid.push("5.png");
+   				lastGrid.push("11.png");
+   				
+   				piecesGrid[0].push("2.png");   				
+   			}
+   			
+   		  }
+   		  
+   		  filledGrid.push("10.png");
+   		  piecesGrid[0].push("9.png");
+   		  lastGrid.push("8.png");
+   		
+   		  for(var i = 1; i < numHeight; i++){
+   			piecesGrid[i] = filledGrid;
+   		  }   		     		  
+   		     		  
+   		  piecesGrid[ numHeight ] = lastGrid;   		  
+   		  
+   		  ctx.drawImage(puzzleImage, 0, 0, targetWidth, targetHeight);
+   		  
+   		  var img = null, offsetW = 0, offsetH = 0;
+   		  for(var i = 0; i < piecesGrid.length; i++){
+   			  
+   			  offsetW = 0;   			  
+   			  
+   			  for(var j = 0; j < piecesGrid[i].length; j++){
+   				  
+   				  innerOffsetH = 0, innerOffsetW = 0;
+   				
+   				  img = getImg( piecesGrid[i][j] );
+   				     				  
+   				  if(i == 0 && j == 1){
+   					  innerOffsetW = -4;
+  				  }
+   				  
+   				  if( i > 0 ){
+   					  
+   					  if( j > 0 && j % 2 == 0 ){
+   						innerOffsetH = 0;					
+   					  }
+   					  
+   					  if( j > 0 && j % 2 == 1 ){
+   						innerOffsetH = -30;   						
+   					  }
+   					  
+   					  if( j == piecesGrid[i].length - 1 ){
+   						innerOffsetH = -29;
+   					  }
+   				  }
+   				  
+   				  ctx.drawImage(img, offsetW + innerOffsetW, offsetH + innerOffsetH);
+   				     				  
+   				  if( i == 0 ){
+   				  	offsetW += img.width * .7;
+   				  }else if( i < piecesGrid.length - 1 ){
+   					  
+   					if( j < piecesGrid[i].length - 2 && j % 2 == 0 ){
+   						offsetW += img.width * .73;
+   					}
+   					
+   					if( j < piecesGrid[i].length - 2 && j % 2 == 1 ){
+   						offsetW += img.width * .61;
+   					}   					   					
+   					
+   					if( j == piecesGrid[i].length - 2 ){
+   						offsetW += img.width * .75;
+   					}   							
+   					
+   				  }else if(i == piecesGrid.length - 1){
+   					  
+  					if( j < piecesGrid[i].length - 2 && j % 2 == 0 ){
+  						offsetW += img.width * .71;
+       				}   					   					   					  
+   					
+   					if( j < piecesGrid[i].length - 2 && j % 2 == 1 ){
+   						offsetW += img.width * .7;
+   					}   					   					
+   					
+   					if( j == piecesGrid[i].length - 2 ){
+   						offsetW += img.width * .7;
+   					}   							  					
+  					
+   				  }   				  
+   				  
+   			  }
+   			  
+   			  if( i == 0 ){
+   				offsetH += img.height * .92;
+   			  }else if(i == piecesGrid.length - 2){
+   				offsetH += img.height * .74;
+   			  }else{
+   				offsetH += img.height * .73;
+   			  }
+   			  
+   		  }
+   		  
+   		  /*
+   		  var drawCanvas = document.createElement("canvas"), drawCanvasCtx = drawCanvas.getContext('2d');   		  
+   		  drawCanvas.width = puzzleImage.width;
+   		  drawCanvas.height = puzzleImage.height;
+   		  drawCanvasCtx.drawImage(puzzleImage, 0, 0);
+   		     		  
+   		  var puzzleData = drawCanvasCtx.getImageData(offsetX, offsetY, imageWidth, imageHeight);   		  
+   		  drawCanvas = document.createElement("canvas");
+   		  drawCanvasCtx = drawCanvas.getContext('2d');
+   		  
+   		  drawCanvas.width = imageWidth;
+   		  drawCanvas.height = imageHeight;   		  
+   		  drawCanvasCtx.putImageData(puzzleData, 0, 0);
+   				
+   		  fabric.Image.fromURL(drawCanvas.toDataURL("image/png"), function(img) {
+   			fc.add(img);
+   		  });
+   		  */
+   	  }
+   	     	  
+      var loadedImages = ["1.png", "2.png", "3.png", "4.png", "5.png", 
+                          "6.png", "7.png", "8.png", "9.png", "10.png", "11.png", "12.png"];
+      
+      loadedImages = _.map(loadedImages, function(src){
+	    	  var img = new Image();    	  
+	    	  img.src = "puzzle_pieces/" + src;
+	    	  img.df = $.Deferred();
+	    	  
+	    	  img.addEventListener("load", function(){img.df.resolve(this);});    	  
+	    	  return img;
+   	  });    	  
+      
+      var imageDfs = _.pluck(loadedImages, "df");      
+   	  
+      var df = $.Deferred();
+   	  imageDfs.push(df);   	  
+   	  var puzzleImage = new Image();
+   	  puzzleImage.src = "beaconhill.jpg";   	
+   	  puzzleImage.addEventListener("load", function(){ df.resolve(this); });
+   	     	
+      $.when.apply($, imageDfs)
+      .done(function(){
+    	      	      	
+        	setup(loadedImages, puzzleImage);
+        	
+    	  	window.setTimeout(function(){
+    	  	  $("#shuffle").click();   
+    	  	}, 1000 );
+      });
+      
     </script>
         
   </body>
