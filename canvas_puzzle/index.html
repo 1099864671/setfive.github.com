@@ -62,15 +62,13 @@
   			<button class="btn btn-primary" id="shuffle">Shuffle</button>  			  			
   	      			
 		</div>  	       
-    </div>    
-    
-    <canvas style="margin-top: 40px; margin-bottom: 40px;" id="clippingCanvas"></canvas>
+    </div>        
     
     <script type="text/javascript">    
       
-      var fc = new fabric.Canvas("canvas", {backgroundColor: 'rgb(0, 0, 0)'});
+      var fc = new fabric.Canvas("canvas", {backgroundColor: 'rgb(0, 0, 0)', border: "1px solid white"});
+      var fabricImages = [];
       
-      /*
       fc.on("object:moving", function(el){
     	 var tl = Math.pow(el.target.getLeft() - el.target.originalCoords[0], 2);    	 
     	 var tt = Math.pow((el.target.getTop() - el.target.originalCoords[1]), 2);    	 
@@ -83,98 +81,15 @@
     		 el.target.set("opacity", .6);
     	 }
       });
-      */
       
       fc.setWidth( window.innerWidth - 40 );
       fc.setHeight( window.innerHeight - 40 );                 
    	  fc.renderAll();
-   	     	  
-   	  var canvas = document.getElementById("clippingCanvas"), ctx = canvas.getContext('2d');
-   	     	  
-   	  var fabricImages = [];
-   	
-   	  canvas.width = window.innerWidth - 40;
-   	  canvas.height = window.innerHeight - 40;   	     	     	  
    	  
-   	  $("#shuffle").click(function(){
-   		  
-   		  var onChange = function(){
-   			  
-  		    window.requestAnimationFrame(function(){
-  		    	fc.renderAll.bind(fc)();
-   			});
-   			
-   		  };
-   		  
-   		  $.each(fabricImages, function(i, img){
-   			  var left = Math.floor((Math.random() * 800 - 50) + 0); 
-   			  var top = Math.floor((Math.random() * 600 - 50) + 0);
-   			  img.animate({left: left, top: top}, {onChange: onChange});
-   		  });
-   		  
-   		  return false;
-   	  });
-   	  
-   	  /*
-   	  function copyImageChunk(x, y, p){
-   		     		  
-   		  maskCanvasCtx.clearRect(0, 0, pieceWidth, pieceHeight);
-   		  maskCanvasCtx.putImageData(ctx.getImageData(x, y, pieceWidth, pieceHeight), 0, 0);
-   		  
-   		  copiedCtx.clearRect(0, 0, pieceWidth, pieceHeight);   		  
-   		  
-   		  copiedCtx.globalCompositeOperation = "source-over";
-   		  copiedCtx.drawImage(p, 0, 0, 100, 100);
-   		  
-   		  copiedCtx.globalCompositeOperation = "source-in";  		  
-   		  copiedCtx.drawImage(maskCanvas, 0, 0, 100, 100);
-   		  
-   		  fabric.Image.fromURL(copiedCanvas.toDataURL("image/png"), function(img) { 
-   			     			     			  
-   			  img.set("hasBorders", false);
-   			  img.set("left", x);
-   			  img.set("top", y);
-   			     			     			  
-   			  img.hasControls = false;
-   			  img.lockRotation = true;
-   			  img.lockScalingX = true; img.lockScalingY = true;   			  
-   			  img.originalCoords = [x, y];
-   			
-   			  fc.add(img);
-   			  fabricImages.push(img);   			     			  
-   		  });
-   		  
-   	  }
-   	  */
-   	  
-   	  function drawImage(image){
-   		     		  
-   		  var iC = 0, jC = 0;
-   		  var pieces = [piece2, piece1, piece2];
-   		  
-   		  ctx.drawImage(image, 0, 0, 800, 600);
-   		  
-   		  for(var i = 0; i < 800; i += pieceWidth){
-   			  
-   			for(var j = 0; j < 600; j += pieceHeight){
-   				
-   		  		copyImageChunk(i, j, pieces[jC]);   		  		
-   		  		jC += 1;
-   		  		
-   		  		if( jC == 2 ){
-   		  			jC = 0;
-   		  		}
-   			}
-   			
-   		  }
-   		  
-   	  }   	  
-   	     	  
-   	  function copyImageChunk(img, x, y){
+   	  function copyImageChunk(ctx, img, x, y){
    		
    	   	  var copiedCanvas = document.createElement("canvas"), copiedCtx = copiedCanvas.getContext('2d');
    	   	  var maskCanvas = document.createElement("canvas"), maskCanvasCtx = maskCanvas.getContext('2d');
-   		  // var w = img.width * 1.10, h = img.height * 1.10;
    	   	  var w = img.width, h = img.height;
    	   	  
    		  maskCanvas.width = w;
@@ -206,7 +121,13 @@
    		  
    	  }
    	  
-   	  function setup(loadedImages, puzzleImage){   		  
+   	  function getImg(loadedImages, el){   		  
+   		  return _.find(loadedImages, function(e){
+   			  return $(e).attr("src") == "puzzle_pieces/" + el;
+   		  });   		  
+   	  }
+   	  
+   	  function setup(ctx, loadedImages, puzzleImage){   		  
    		     		  
    		  var imageHeight = puzzleImage.height, imageWidth = puzzleImage.width;   		   		     		
    		  var targetHeight, targetWidth;   		     		  
@@ -219,16 +140,12 @@
    			  targetWidth = Math.floor( (targetHeight * imageWidth) / imageHeight );
    		  }   		  
    		  
-   		  var getImg = function(el){
-   			  			  return _.find(loadedImages, function(e){return $(e).attr("src") == "puzzle_pieces/" + el;})
-   			  			};
-   			  			
-   		  var cornerLeft = getImg("1.png").width * .7, cornerRight = getImg("9.png").width * .7;
-   		  var midLeft = getImg("2.png").width * .7, midRight = getImg("3.png").width * .7;   		  
-   		  var middleSide = getImg("4.png").width * .73, cornerBottom = getImg("7.png").width * .73;
+   		  var cornerLeft = getImg(loadedImages, "1.png").width * .7, cornerRight = getImg(loadedImages, "9.png").width * .7;   		  
+   		  var midLeft = getImg(loadedImages, "2.png").width * .7, midRight = getImg(loadedImages, "3.png").width * .7;   		  
+   		  var middleSide = getImg(loadedImages, "4.png").width * .73, cornerBottom = getImg(loadedImages, "7.png").width * .73;
    		  
    		  var numWide = 2 + (Math.ceil((targetWidth - (cornerLeft + cornerRight)) / (midLeft + midRight)) * 2);
-   		  var cornerLeftHeight = getImg("1.png").width * .92;
+   		  var cornerLeftHeight = getImg(loadedImages, "1.png").width * .92;
    		  var numHeight = Math.ceil((targetHeight - (cornerLeftHeight + cornerBottom)) / middleSide);   		     		     		  
    		     		  
    		  var filledGrid = ["4.png"], piecesGrid = [ ["1.png"] ], lastGrid = ["7.png"];
@@ -261,135 +178,156 @@
    		  
    		  ctx.drawImage(puzzleImage, 0, 0, targetWidth, targetHeight);
    		  
-   		  var img = null, offsetW = 0, offsetH = 0;
-   		  for(var i = 0; i < piecesGrid.length; i++){
-   			  
-   			  offsetW = 0;   			  
-   			  
-   			  for(var j = 0; j < piecesGrid[i].length; j++){
-   				  
-   				  innerOffsetH = 0, innerOffsetW = 0;
-   				
-   				  img = getImg( piecesGrid[i][j] );
-   				     				  
-   				  if(i == 0 && j == 1){
-   					  innerOffsetW = -4;
-  				  }
-   				  
-   				  if( i > 0 ){
-   					  
-   					  if( j > 0 && j % 2 == 0 ){
-   						innerOffsetH = 0;					
-   					  }
-   					  
-   					  if( j > 0 && j % 2 == 1 ){
-   						innerOffsetH = -30;   						
-   					  }
-   					  
-   					  if( j == piecesGrid[i].length - 1 ){
-   						innerOffsetH = -29;
-   					  }
-   				  }
-   				     				  
-   				  copyImageChunk(img, offsetW + innerOffsetW, offsetH + innerOffsetH);
-   				  // ctx.drawImage(img, offsetW + innerOffsetW, offsetH + innerOffsetH);
-   				     				  
-   				  if( i == 0 ){
-   				  	offsetW += img.width * .7;
-   				  }else if( i < piecesGrid.length - 1 ){
-   					  
-   					if( j < piecesGrid[i].length - 2 && j % 2 == 0 ){
-   						offsetW += img.width * .73;
-   					}
-   					
-   					if( j < piecesGrid[i].length - 2 && j % 2 == 1 ){
-   						offsetW += img.width * .61;
-   					}   					   					
-   					
-   					if( j == piecesGrid[i].length - 2 ){
-   						offsetW += img.width * .75;
-   					}   							
-   					
-   				  }else if(i == piecesGrid.length - 1){
-   					  
-  					if( j < piecesGrid[i].length - 2 && j % 2 == 0 ){
-  						offsetW += img.width * .71;
-       				}   					   					   					  
-   					
-   					if( j < piecesGrid[i].length - 2 && j % 2 == 1 ){
-   						offsetW += img.width * .7;
-   					}   					   					
-   					
-   					if( j == piecesGrid[i].length - 2 ){
-   						offsetW += img.width * .7;
-   					}   							  					
-  					
-   				  }   				  
-   				  
-   			  }
-   			  
-   			  if( i == 0 ){
-   				offsetH += img.height * .92;
-   			  }else if(i == piecesGrid.length - 2){
-   				offsetH += img.height * .74;
-   			  }else{
-   				offsetH += img.height * .73;
-   			  }
-   			  
-   		  }
-   		  
-   		  /*
-   		  var drawCanvas = document.createElement("canvas"), drawCanvasCtx = drawCanvas.getContext('2d');   		  
-   		  drawCanvas.width = puzzleImage.width;
-   		  drawCanvas.height = puzzleImage.height;
-   		  drawCanvasCtx.drawImage(puzzleImage, 0, 0);
-   		     		  
-   		  var puzzleData = drawCanvasCtx.getImageData(offsetX, offsetY, imageWidth, imageHeight);   		  
-   		  drawCanvas = document.createElement("canvas");
-   		  drawCanvasCtx = drawCanvas.getContext('2d');
-   		  
-   		  drawCanvas.width = imageWidth;
-   		  drawCanvas.height = imageHeight;   		  
-   		  drawCanvasCtx.putImageData(puzzleData, 0, 0);
-   				
-   		  fabric.Image.fromURL(drawCanvas.toDataURL("image/png"), function(img) {
-   			fc.add(img);
-   		  });
-   		  */
+   		  return piecesGrid;   		     		   		  
    	  }
-   	     	  
-      var loadedImages = ["1.png", "2.png", "3.png", "4.png", "5.png", 
-                          "6.png", "7.png", "8.png", "9.png", "10.png", "11.png", "12.png"];
-      
-      loadedImages = _.map(loadedImages, function(src){
-	    	  var img = new Image();    	  
-	    	  img.src = "puzzle_pieces/" + src;
-	    	  img.df = $.Deferred();
-	    	  
-	    	  img.addEventListener("load", function(){img.df.resolve(this);});    	  
-	    	  return img;
-   	  });    	  
-      
-      var imageDfs = _.pluck(loadedImages, "df");      
    	  
-      var df = $.Deferred();
-   	  imageDfs.push(df);   	  
-   	  var puzzleImage = new Image();
-   	  puzzleImage.src = "beaconhill.jpg";   	
-   	  puzzleImage.addEventListener("load", function(){ df.resolve(this); });
-   	     	
-      $.when.apply($, imageDfs)
-      .done(function(){
-    	      	      	
-        	setup(loadedImages, puzzleImage);
-        	
-        	/*
-    	  	window.setTimeout(function(){
-    	  	  $("#shuffle").click();   
-    	  	}, 1000 );
-        	*/
-      });
+   	  function iterativeCopy(res){
+   		  
+   		  if( res.i >= res.piecesGrid.length && res.j == 0 ){
+   			  return false;
+   		  }
+   		     		  
+   		  var piecesGrid = res.piecesGrid;
+   		  var img = null;
+   		  
+		  innerOffsetH = 0, innerOffsetW = 0;
+ 				
+		  img = getImg( res.loadedImages, piecesGrid[res.i][res.j] );
+		     				  
+		  if(res.i == 0 && res.j == 1){
+			  innerOffsetW = -4;
+		  }
+		  
+		  if( res.i > 0 ){			  
+			  if( res.j > 0 && res.j % 2 == 0 ){
+				innerOffsetH = 0;					
+			  }
+			  
+			  if( res.j > 0 && res.j % 2 == 1 ){
+				innerOffsetH = -30;   						
+			  }
+			  
+			  if( res.j == piecesGrid[res.i].length - 1 ){
+				innerOffsetH = -29;
+			  }
+		  }
+		     				  
+		  copyImageChunk(res.ctx, img, res.offsetW + innerOffsetW, res.offsetH + innerOffsetH);
+		     				  
+		  if( res.i == 0 ){
+			  res.offsetW += img.width * .7;
+		  }else if( res.i < piecesGrid.length - 1 ){
+			  
+			if( res.j < piecesGrid[res.i].length - 2 && res.j % 2 == 0 ){
+				res.offsetW += img.width * .73;
+			}
+			
+			if( res.j < piecesGrid[res.i].length - 2 && res.j % 2 == 1 ){
+				res.offsetW += img.width * .61;
+			}   					   					
+			
+			if( res.j == piecesGrid[res.i].length - 2 ){
+				res.offsetW += img.width * .75;
+			}   							
+			
+		  }else if(res.i == res.piecesGrid.length - 1){
+			  
+			if( res.j < res.piecesGrid[res.i].length - 2 && res.j % 2 == 0 ){
+				res.offsetW += img.width * .71;
+			}   					   					   					  
+			
+			if( res.j < res.piecesGrid[res.i].length - 2 && res.j % 2 == 1 ){
+				res.offsetW += img.width * .7;
+			}   					   					
+			
+			if( res.j == res.piecesGrid[res.i].length - 2 ){
+				res.offsetW += img.width * .7;
+			}
+			
+		  }
+   		  
+		  res.j += 1;
+		  
+   		  if( res.j == piecesGrid[res.i].length ){
+   			  
+   			  res.i += 1;
+   			  res.j = 0;     			
+   			  res.offsetW = 0;
+   			
+   			  if( res.i == 0 ){
+   				res.offsetH += img.height * .92;
+   			  }else if(res.i == piecesGrid.length - 2){
+   				res.offsetH += img.height * .74;
+   			  }else{
+   				res.offsetH += img.height * .73;
+   			  }   			  
+   		  }   		  
+   		  
+   		  window.requestAnimationFrame(function(){   			  
+   			  iterativeCopy(res); 
+   		  });
+   	  }
+   	  
+   	  function bootstrap(){
+	      var loadedImages = 
+	    	  _(["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", 
+	    	      "7.png", "8.png", "9.png", "10.png", "11.png", "12.png"])
+	     	   .map(function(src){
+		    	  var img = new Image();    	  
+		    	  img.src = "puzzle_pieces/" + src;
+		    	  img.df = $.Deferred();
+		    	  
+		    	  img.addEventListener("load", function(){img.df.resolve(this);});    	  
+		    	  return img;
+	   	  }).value();      
+	      
+	      var imageDfs = _.pluck(loadedImages, "df");      
+	   	  
+	      var df = $.Deferred();
+	   	  imageDfs.push(df);
+	   	  
+	   	  var puzzleImage = new Image();
+	   	  puzzleImage.src = "beaconhill.jpg";   	
+	   	  puzzleImage.addEventListener("load", function(){ df.resolve(this); });
+	   	  
+	   	  var canvas = document.createElement("canvas"), ctx = canvas.getContext('2d');   	     	     	  
+	     	
+	   	  canvas.width = window.innerWidth - 40;
+	   	  canvas.height = window.innerHeight - 40;   	     	     	  
+	   	  
+	      $.when.apply($, imageDfs).done(function(){
+	    	  var res = {ctx: ctx, offsetW: 0, offsetH: 0, i: 0, j: 0};
+	    	  
+	    	  res.loadedImages = loadedImages;
+	    	  res.piecesGrid = setup(ctx, loadedImages, puzzleImage);	    	  
+	    	  
+	    	  window.requestAnimationFrame(function(){ iterativeCopy(res); });	    	  
+	      });   		  
+   	  }
+   	  
+   	  $(document).ready(function(){
+   		  
+   		  bootstrap();
+   		
+	   	  $("#shuffle").click(function(){
+	   		  
+	   		  var onChange = function(){   			  
+	  		    window.requestAnimationFrame(function(){
+	  		    	fc.renderAll.bind(fc)();
+	   			});   			
+	   		  };
+	   		  
+	   		  $.each(fabricImages, function(i, img){
+	   			  var left = Math.floor((Math.random() * 800 - 50) + 0); 
+	   			  var top = Math.floor((Math.random() * 600 - 50) + 0);
+	   			  img.animate({left: left, top: top}, {onChange: onChange});
+	   		  });
+	   		  
+	   		  return false;
+	   	  });
       
+   	  });
+   	  
     </script>
         
   </body>
