@@ -40,8 +40,7 @@
       
       .main-container {
       	padding: 20px;
-      	background: #000;
-      	display: none;     	
+      	background: #000;     	
       }            
                   
       #shuffle {
@@ -68,14 +67,10 @@
     <canvas style="margin-top: 40px; margin-bottom: 40px;" id="clippingCanvas"></canvas>
     
     <script type="text/javascript">    
-      var piece1 = new Image();
-      piece1.src = "piece1.png";
-
-      var piece2 = new Image();
-      piece2.src = "piece2.png";
       
       var fc = new fabric.Canvas("canvas", {backgroundColor: 'rgb(0, 0, 0)'});
       
+      /*
       fc.on("object:moving", function(el){
     	 var tl = Math.pow(el.target.getLeft() - el.target.originalCoords[0], 2);    	 
     	 var tt = Math.pow((el.target.getTop() - el.target.originalCoords[1]), 2);    	 
@@ -88,27 +83,18 @@
     		 el.target.set("opacity", .6);
     	 }
       });
+      */
       
       fc.setWidth( window.innerWidth - 40 );
       fc.setHeight( window.innerHeight - 40 );                 
    	  fc.renderAll();
    	     	  
    	  var canvas = document.getElementById("clippingCanvas"), ctx = canvas.getContext('2d');
-   	  var copiedCanvas = document.createElement("canvas"), copiedCtx = copiedCanvas.getContext('2d');
-   	  var maskCanvas = document.createElement("canvas"), maskCanvasCtx = maskCanvas.getContext('2d');
-   	
-   	  var pieceWidth = 100, pieceHeight = 100;   	  
-   	  
-   	  copiedCanvas.width = pieceWidth;
-   	  copiedCanvas.height = pieceHeight;
-   	  
-   	  maskCanvas.width = pieceWidth;
-   	  maskCanvas.height = pieceHeight;
-   	  
-   	  canvas.width = window.innerWidth;
-   	  canvas.height = window.innerHeight;   	  
-   	  
+   	     	  
    	  var fabricImages = [];
+   	
+   	  canvas.width = window.innerWidth - 40;
+   	  canvas.height = window.innerHeight - 40;   	     	     	  
    	  
    	  $("#shuffle").click(function(){
    		  
@@ -129,6 +115,7 @@
    		  return false;
    	  });
    	  
+   	  /*
    	  function copyImageChunk(x, y, p){
    		     		  
    		  maskCanvasCtx.clearRect(0, 0, pieceWidth, pieceHeight);
@@ -143,13 +130,7 @@
    		  copiedCtx.drawImage(maskCanvas, 0, 0, 100, 100);
    		  
    		  fabric.Image.fromURL(copiedCanvas.toDataURL("image/png"), function(img) { 
-   			  
-   			  /*   			  
-   			  img.set("borderColor", "rgb(255, 255, 255)");
-   			  img.set("scaleX", ".9");
- 			  img.set("scaleY", ".9")   			  
-   			  */
-   			     			  
+   			     			     			  
    			  img.set("hasBorders", false);
    			  img.set("left", x);
    			  img.set("top", y);
@@ -164,6 +145,7 @@
    		  });
    		  
    	  }
+   	  */
    	  
    	  function drawImage(image){
    		     		  
@@ -187,6 +169,42 @@
    		  }
    		  
    	  }   	  
+   	     	  
+   	  function copyImageChunk(img, x, y){
+   		
+   	   	  var copiedCanvas = document.createElement("canvas"), copiedCtx = copiedCanvas.getContext('2d');
+   	   	  var maskCanvas = document.createElement("canvas"), maskCanvasCtx = maskCanvas.getContext('2d');
+   		  // var w = img.width * 1.10, h = img.height * 1.10;
+   	   	  var w = img.width, h = img.height;
+   	   	  
+   		  maskCanvas.width = w;
+   		  maskCanvas.height = h;
+
+   		  copiedCanvas.width = w;
+   		  copiedCanvas.height = h;   		  
+   		  
+   		  copiedCtx.drawImage(img, 0, 0);
+   		  maskCanvasCtx.putImageData( ctx.getImageData(x, y, w, h), 0, 0);
+   		  
+   		  copiedCtx.globalCompositeOperation = "source-in";  		  
+   		  copiedCtx.drawImage(maskCanvas, 0, 0);
+   		  
+   		  fabric.Image.fromURL(copiedCanvas.toDataURL("image/png"), function(img) { 
+   			  
+   			  img.set("hasBorders", false);
+   			  img.set("left", x);
+   			  img.set("top", y);
+   			     			     			  
+   			  img.hasControls = false;
+   			  img.lockRotation = true;
+   			  img.lockScalingX = true; img.lockScalingY = true;   			  
+   			  img.originalCoords = [x, y];
+   			
+   			  fc.add(img);
+   			  fabricImages.push(img);   			     			  
+   		  });   		  
+   		  
+   	  }
    	  
    	  function setup(loadedImages, puzzleImage){   		  
    		     		  
@@ -272,8 +290,9 @@
    						innerOffsetH = -29;
    					  }
    				  }
-   				  
-   				  ctx.drawImage(img, offsetW + innerOffsetW, offsetH + innerOffsetH);
+   				     				  
+   				  copyImageChunk(img, offsetW + innerOffsetW, offsetH + innerOffsetH);
+   				  // ctx.drawImage(img, offsetW + innerOffsetW, offsetH + innerOffsetH);
    				     				  
    				  if( i == 0 ){
    				  	offsetW += img.width * .7;
@@ -364,9 +383,11 @@
     	      	      	
         	setup(loadedImages, puzzleImage);
         	
+        	/*
     	  	window.setTimeout(function(){
     	  	  $("#shuffle").click();   
     	  	}, 1000 );
+        	*/
       });
       
     </script>
