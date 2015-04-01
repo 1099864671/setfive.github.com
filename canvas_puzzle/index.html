@@ -46,10 +46,11 @@
       	top: 0px;
       	right: 0px;
       }
-      
+            
       .canvas-container {
       	margin: auto;
       }
+      
     </style>    
   </head>
   <body>
@@ -68,13 +69,15 @@
     
     <script type="text/javascript">    
       
-      var fc = new fabric.Canvas("canvas", {backgroundColor: 'rgb(0, 0, 0)', border: "1px solid white"});
+      var fc = new fabric.Canvas("canvas", {backgroundColor: 'rgb(0, 0, 0)', border: "1px solid white"});      
       var fabricImages = [];
       
       fc.on("object:moving", function(el){
     	 if( !el.target.originalCoords ){
     		 return;
-    	 }
+    	 }    	     	 
+    	 
+    	 return;
     	 
     	 var tl = Math.pow(el.target.getLeft() - el.target.originalCoords[0], 2);    	 
     	 var tt = Math.pow((el.target.getTop() - el.target.originalCoords[1]), 2);    	 
@@ -109,7 +112,7 @@
    		  maskCanvasCtx.putImageData( ctx.getImageData(x, y, w, h), 0, 0);
    		  
    		  copiedCtx.globalCompositeOperation = "source-in";  		  
-   		  copiedCtx.drawImage(maskCanvas, 0, 0);
+   		  copiedCtx.drawImage(maskCanvas, 0, 0);   		     		  
    		  
    		  fabric.Image.fromURL(copiedCanvas.toDataURL("image/png"), function(img) { 
    			  
@@ -149,17 +152,14 @@
    			  targetHeight = window.innerHeight - 40;
    			  targetWidth = Math.floor( (targetHeight * imageWidth) / imageHeight );
    		  }   		  
-   		  
-   	      fc.setWidth( targetWidth * 1.05 );
-   	      fc.setHeight( targetHeight * 1.05 );
-   	         		  
+   		     	         		  
    		  var cornerLeft = getImg(loadedImages, "1.png").width * .7, cornerRight = getImg(loadedImages, "9.png").width * .7;   		  
    		  var midLeft = getImg(loadedImages, "2.png").width * .7, midRight = getImg(loadedImages, "3.png").width * .7;   		  
    		  var middleSide = getImg(loadedImages, "4.png").width * .73, cornerBottom = getImg(loadedImages, "7.png").width * .73;
    		  
-   		  var numWide = 2 + (Math.ceil((targetWidth - (cornerLeft + cornerRight)) / (midLeft + midRight)) * 2);
+   		  var numWide = 2 + (Math.floor((targetWidth - (cornerLeft + cornerRight)) / (midLeft + midRight)) * 2);
    		  var cornerLeftHeight = getImg(loadedImages, "1.png").width * .92;
-   		  var numHeight = Math.ceil((targetHeight - (cornerLeftHeight + cornerBottom)) / middleSide);   		     		     		  
+   		  var numHeight = Math.floor((targetHeight - (cornerLeftHeight + cornerBottom)) / middleSide);   		     		     		  
    		     		  
    		  var filledGrid = ["4.png"], piecesGrid = [ ["1.png"] ], lastGrid = ["7.png"];
    		  
@@ -190,24 +190,49 @@
    		  piecesGrid[ numHeight ] = lastGrid;   		  
    		  
    		  ctx.drawImage(puzzleImage, 0, 0, targetWidth, targetHeight);
-   		  
-   		  var border = new fabric.Rect({
-   			 top: 0, left: 0, width: targetWidth, 
-   			 height: targetHeight, stroke: "white", 
-   			 hasControls: false, lockRotation: true, 
-   			 lockMovementX: true, lockMovementY: true, 
-   			 hasBorders: false	 
-   		  });
-   		  
-   		  fc.add(border);
-   		  
+   		     		  
    		  return piecesGrid;   		     		   		  
    	  }
    	  
    	  function iterativeCopy(res){
    		  
    		  if( res.i >= res.piecesGrid.length && res.j == 0 ){
-   			  fc.renderAll();
+   			  
+   			  var totalPieces = _.flatten(res.piecesGrid).length;   			  
+   			  var timer = window.setInterval(function(){
+   				  
+   				  if( fabricImages.length != totalPieces ){
+   					  return true;
+   				  }
+   				  
+   				  window.clearInterval(timer);
+   				  
+	   			  var lastImg = _(fabricImages)
+	  			  				 .sortBy(function(e){return e.getLeft() + e.getTop();})
+	  			  				 .reverse().value()[0];
+	   			     			
+	   			  var width = lastImg.getBoundingRect().left + lastImg.getBoundingRect().width, 
+	   			  			  height = lastImg.getBoundingRect().top + lastImg.getBoundingRect().height;	   			     	
+	   			  
+	   	   	      fc.setWidth( width * 1.05 );
+	   	   	      fc.setHeight( height * 1.05 );   		  	   			  
+	   			  
+	   	   		  var border = new fabric.Rect({
+	   	   			 top: 0, left: 0, 
+	   	   			 width: width, height: height, 
+	   	   			 stroke: "white", strokeWidth: 5, 
+	   	   			 fill: "transparent",
+	   	   			 hasControls: false, lockRotation: true, 
+	   	   			 lockMovementX: true, lockMovementY: true, 
+	   	   			 hasBorders: false	 
+	   	   		  });
+	   	   		  
+	   	   		  fc.add(border);
+	   	   		  border.sendToBack();	   	   		  
+	   	   		  fc.renderAll();
+	   	   		  
+   			  }, 300);
+   	   		  
    			  return false;
    		  }
    		     		  
