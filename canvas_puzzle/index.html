@@ -13,6 +13,7 @@
         
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="jquery.color-2.1.2.min.js"></script>    
     <script src="lodash.min.js"></script>    
     <script src="fabric.min.js"></script>
     
@@ -40,56 +41,118 @@
       	background: #000;
       	margin-top: 40px;     	
       }            
-                  
-      #shuffle {
-      	position: absolute;
-      	top: 0px;
-      	right: 0px;
-      }
-            
+                              
       .canvas-container {
       	margin: auto;
       }
       
+      .header-container {
+      	height: auto;
+      	padding: 12px 20px;
+      	border-top: 6px solid #ffff00;
+      	border-bottom: 1px solid #030303;
+      	background: url("escheresque_ste.png") repeat;
+      }
+      
+      .right-menu {
+      	position: relative;
+      }
+      
+      .puzzle-menu {
+      	position: absolute;
+      	right: 0px;
+      	padding: 10px;      	
+      	color: #fff;
+      	width: 400px;
+      	height: 300px;
+      	background-color: rgba(51, 122, 183, .6);
+      	border-top-left-radius: 3px;
+      	border-bottom-left-radius: 3px;
+      	border-bottom-right-radius: 3px;
+      	display: none;
+      	text-align: right;
+      	z-index: 10;
+      }
+      
+      a.btn.open {
+      	border-bottom-left-radius: 0;
+      	border-bottom-right-radius: 0;
+      	border-bottom: 0;      
+      }
+      
+      .logo {
+      	float: left;
+      	width: 300px;
+      }
+      
+      .right-menu {
+      	float: right;
+      	width: 500px;      	
+      }
+      
+      #previewCanvas {
+      	margin-top: 15px;
+      }
     </style>    
   </head>
   <body>
   	
+  	<div class="header-container">
+  		<div class="logo">  		
+  		  <a href="http://www.setfive.com" target="_blank"><img src="logo_noconsulting.png" /></a>
+  		</div>  	
+  		
+  		<div class="right-menu">
+  			<div class="text-right">		
+  				<a href="#" data-provide="show-menu" 
+  					class="btn btn-primary"><span class="glyphicon glyphicon-th-large"></span></a>
+  				<div class="puzzle-menu">
+  					<div class="btn-group">
+  						<button class="btn btn-default" id="shuffle">Shuffle</button>
+  						<button class="btn btn-default" id="giveMe">Give me one!</button>
+  					</div>
+  					
+  					<canvas id="previewCanvas"></canvas>
+  				</div>
+  			</div>
+  		</div>
+  		
+  		<div class="clearfix"></div>	  	  			 
+  	</div>
+  	
   	<div class="main-container">
   		<canvas id="canvas"></canvas>
   	</div>
-  	
-  	<div class="container main-container">
-  		<div class="col-md-12">
-  			
-  			<button class="btn btn-primary" id="shuffle">Shuffle</button>  			  			
-  	      			
-		</div>  	       
-    </div>        
-    
+  	    
     <script type="text/javascript">    
       
       var fc = new fabric.Canvas("canvas", {backgroundColor: 'rgb(0, 0, 0)', border: "1px solid white"});      
       var fabricImages = [];
       
-      fc.on("object:moving", function(el){
-    	 if( !el.target.originalCoords ){
+      fabric.Image.prototype.onMove = function(el){
+     	 if( !el.originalCoords ){
     		 return;
     	 }    	     	 
-    	 
-    	 return;
-    	 
-    	 var tl = Math.pow(el.target.getLeft() - el.target.originalCoords[0], 2);    	 
-    	 var tt = Math.pow((el.target.getTop() - el.target.originalCoords[1]), 2);    	 
+     	 
+    	 var tl = Math.pow(el.getLeft() - el.originalCoords[0], 2);    	 
+    	 var tt = Math.pow((el.getTop() - el.originalCoords[1]), 2);    	 
     	 
     	 if( Math.sqrt(tl + tt) < 10 ){
-    		 el.target.set("left", el.target.originalCoords[0]);
-    		 el.target.set("top", el.target.originalCoords[1]);    		 
-    		 el.target.set("lockMovementX", true);
-    		 el.target.set("lockMovementY", true);
-    		 el.target.set("opacity", .6);
-    		 el.target.isCorrect = true;
+    		 el.set("left", el.originalCoords[0]);
+    		 el.set("top", el.originalCoords[1]);    		 
+    		 el.set("lockMovementX", true);
+    		 el.set("lockMovementY", true);
+    		 el.set("opacity", .6);
+    		 el.isCorrect = true;
+    		 
+    		 $(".header-container").animate({"border-top-color": "#337ab7"}, 1000, function(){
+    			 $(".header-container").animate({"border-top-color": "#ffff00"}, 1000);
+    		 });
     	 }
+      };
+      
+      fc.on("object:moving", function(el){    	 
+    	  el.target.onMove(el.target);
       });
       
       fc.setWidth( window.innerWidth - 40 );
@@ -213,9 +276,9 @@
 	   			     			
 	   			  var width = lastImg.getBoundingRect().left + lastImg.getBoundingRect().width, 
 	   			  			  height = lastImg.getBoundingRect().top + lastImg.getBoundingRect().height;	   			     	
-	   			  
-	   	   	      fc.setWidth( width * 1.05 );
-	   	   	      fc.setHeight( height * 1.05 );   		  	   			  
+	   			  	   			  
+	   	   	      fc.setWidth( width * 1.10 );
+	   	   	      fc.setHeight( height * 1.10 );	   			  	   			  
 	   			  
 	   	   		  var border = new fabric.Rect({
 	   	   			 top: 0, left: 0, 
@@ -230,6 +293,24 @@
 	   	   		  fc.add(border);
 	   	   		  border.sendToBack();	   	   		  
 	   	   		  fc.renderAll();
+	   	   		  
+	   	   		  var targetWidth, targetHeight;
+	   	   		  var previewWidth = $(".puzzle-menu").width(), previewHeight = $(".puzzle-menu").height();	   	   		  
+	   	   		  
+	   	   		  if( height / width < previewHeight / previewWidth ){   			  
+	   	   			  targetWidth = previewWidth;
+	   	   			  targetHeight = Math.floor( (targetWidth * height) / width );   			  
+	   	   		  }else{
+	   	   			  targetHeight = previewHeight;
+	   	   			  targetWidth = Math.floor( (targetHeight * imageWidth) / height );
+	   	   		  }   		  	   	   		  
+	   	   		  
+	   	   		  var previewCanvas = $("#previewCanvas")[0], previewCtx = $("#previewCanvas")[0].getContext("2d");
+	   	   		  
+	   	   		  previewCanvas.width = targetWidth; 
+	   	   		  previewCanvas.height = targetHeight;
+	   	   		  
+	   	   		  previewCtx.drawImage(res.canvas, 0, 0, targetWidth, targetHeight);
 	   	   		  
    			  }, 300);
    	   		  
@@ -345,7 +426,7 @@
 	   	  canvas.height = window.innerHeight - 40;   	     	     	  
 	   	  
 	      $.when.apply($, imageDfs).done(function(){
-	    	  var res = {ctx: ctx, offsetW: 0, offsetH: 0, i: 0, j: 0};
+	    	  var res = {ctx: ctx, canvas: canvas, offsetW: 0, offsetH: 0, i: 0, j: 0};
 	    	  
 	    	  res.loadedImages = loadedImages;
 	    	  res.piecesGrid = setup(ctx, loadedImages, puzzleImage);	    	  
@@ -358,6 +439,38 @@
    		  
    		  bootstrap();
    		
+   		  $("[data-provide='show-menu']").click(function(){
+   			  
+   			  if( $(this).hasClass("open") ){
+   				$(".puzzle-menu").hide();
+       		    $(this).removeClass("open");   				  
+   			  }else{
+   			  	$(".puzzle-menu").show();
+   			  	$(this).addClass("open");
+   			  }
+   			  
+   			  return false;
+   		  });
+   		  
+   		  $("#giveMe").click(function(){
+   			 
+   			  var img = _(fabricImages).filter({isCorrect: false}).shuffle().value()[0];
+   			  
+   			  if( !img ){
+   				  return false;
+   			  }
+   			  
+	   		  var onChange = function(){   			  
+		  		    window.requestAnimationFrame(function(){
+		  		    	fc.renderAll.bind(fc)();
+		  	  });};   			  
+   			  
+		  	  img.animate({left: img.originalCoords[0], top: img.originalCoords[1]}, 
+		  			  	  {onComplete: function(e){img.onMove(img);}, onChange: onChange});
+		  	
+   			  return false;
+   		  });
+   		  
 	   	  $("#shuffle").click(function(){
 	   		  
 	   		  var onChange = function(){   			  
