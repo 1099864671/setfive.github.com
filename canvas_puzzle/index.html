@@ -127,7 +127,7 @@
     <script type="text/javascript">    
       
       var fc = new fabric.Canvas("canvas", {backgroundColor: 'rgb(0, 0, 0)', border: "1px solid white"});      
-      var fabricImages = [];
+      var fabricImages = [], imagePromises = [];
       
       fabric.Image.prototype.onMove = function(el){
      	 if( !el.originalCoords ){
@@ -159,7 +159,7 @@
       fc.setHeight( window.innerHeight - 40 );                 
    	  fc.renderAll();
    	  
-   	  function copyImageChunk(ctx, img, x, y){
+   	  function copyImageChunk(ctx, img, pos){
    		
    	   	  var copiedCanvas = document.createElement("canvas"), copiedCtx = copiedCanvas.getContext('2d');
    	   	  var maskCanvas = document.createElement("canvas"), maskCanvasCtx = maskCanvas.getContext('2d');
@@ -172,27 +172,32 @@
    		  copiedCanvas.height = h;   		  
    		  
    		  copiedCtx.drawImage(img, 0, 0);
-   		  maskCanvasCtx.putImageData( ctx.getImageData(x, y, w, h), 0, 0);
+   		  maskCanvasCtx.putImageData( ctx.getImageData(pos.copyX, pos.copyY, w, h), 0, 0);
    		  
    		  copiedCtx.globalCompositeOperation = "source-in";  		  
    		  copiedCtx.drawImage(maskCanvas, 0, 0);   		     		  
    		  
+   		  var df = $.Deferred();
+   		  imagePromises.push( df );   		  
+   		  
    		  fabric.Image.fromURL(copiedCanvas.toDataURL("image/png"), function(img) { 
    			  
    			  img.set("hasBorders", false);
-   			  img.set("left", x);
-   			  img.set("top", y);
+   			  img.set("left", pos.offsetW);
+   			  img.set("top", pos.offsetH);
    			     			     			  
    			  img.hasControls = false;
    			  img.lockRotation = true;
    			  img.lockScalingX = true; 
    			  img.lockScalingY = true;   			  
    			  
-   			  img.originalCoords = [x, y];
+   			  img.originalCoords = [pos.offsetW, pos.offsetH];
    			  img.isCorrect = false;
    			  
    			  fc.add(img);
-   			  fabricImages.push(img);   			     			  
+   			  
+   			  fabricImages.push(img);
+   			  df.resolve(img);
    		  });   		  
    		  
    	  }
@@ -205,17 +210,25 @@
    	  
    	  function setup(ctx, loadedImages, puzzleImage){   		  
    		     		  
-   		  var imageHeight = puzzleImage.height, imageWidth = puzzleImage.width;   		   		     		
-   		  var targetHeight, targetWidth;   		     		  
+   		  var imageHeight = puzzleImage.height, imageWidth = puzzleImage.width;
+   		  var maxHeight = window.innerHeight - 40, maxWidth = window.innerWidth - 40;
+   		  var targetHeight, targetWidth, offsetLeft = 0, offsetTop = 0; 		     		  
    		     		  
+   		  fc.setWidth( maxWidth );
+   	   	  fc.setHeight( maxHeight );	   			  	   			  
+
    		  if( imageHeight / imageWidth < window.innerHeight / window.innerWidth ){   			  
-   			  targetWidth = window.innerWidth - 40;
-   			  targetHeight = Math.floor( (targetWidth * imageHeight) / imageWidth );   			  
+   			  targetWidth = maxWidth;
+   			  targetHeight = Math.floor( (targetWidth * imageHeight) / imageWidth );
+   			  offsetTop = maxHeight - targetHeight;
    		  }else{
-   			  targetHeight = window.innerHeight - 40;
+   			  targetHeight = maxHeight;
    			  targetWidth = Math.floor( (targetHeight * imageWidth) / imageHeight );
+   			  offsetLeft = (maxWidth - targetWidth) / 4;
    		  }   		  
-   		     	         		  
+   		  
+   		offsetLeft = 0;
+   		
    		  var cornerLeft = getImg(loadedImages, "1.png").width * .7, cornerRight = getImg(loadedImages, "9.png").width * .7;   		  
    		  var midLeft = getImg(loadedImages, "2.png").width * .7, midRight = getImg(loadedImages, "3.png").width * .7;   		  
    		  var middleSide = getImg(loadedImages, "4.png").width * .73, cornerBottom = getImg(loadedImages, "7.png").width * .73;
@@ -226,20 +239,16 @@
    		     		  
    		  var filledGrid = ["4.png"], piecesGrid = [ ["1.png"] ], lastGrid = ["7.png"];
    		  
-   		  for(var j = 1; j < numWide - 1; j++){
-   			
+   		  for(var j = 1; j < numWide - 1; j++){   			
    			if(j % 2 == 0){
    				filledGrid.push("6.png");
-   				lastGrid.push("12.png");
-   				
+   				lastGrid.push("12.png");   				
    				piecesGrid[0].push("3.png");   				
    			}else{
    				filledGrid.push("5.png");
-   				lastGrid.push("11.png");
-   				
+   				lastGrid.push("11.png");   				
    				piecesGrid[0].push("2.png");   				
-   			}
-   			
+   			}   			
    		  }
    		  
    		  filledGrid.push("10.png");
@@ -254,21 +263,16 @@
    		  
    		  ctx.drawImage(puzzleImage, 0, 0, targetWidth, targetHeight);
    		     		  
-   		  return piecesGrid;   		     		   		  
+   		  return {piecesGrid: piecesGrid, 
+  			  	 offsetW: offsetLeft, offsetH: offsetTop, 
+  			  	 globalOffsetW: offsetLeft, globalOffsetH: offsetTop};   		     		   		  
    	  }
    	  
    	  function iterativeCopy(res){
    		  
    		  if( res.i >= res.piecesGrid.length && res.j == 0 ){
    			  
-   			  var totalPieces = _.flatten(res.piecesGrid).length;   			  
-   			  var timer = window.setInterval(function(){
-   				  
-   				  if( fabricImages.length != totalPieces ){
-   					  return true;
-   				  }
-   				  
-   				  window.clearInterval(timer);
+   			  $.when.apply($, imagePromises).done(function(){
    				  
 	   			  var lastImg = _(fabricImages)
 	  			  				 .sortBy(function(e){return e.getLeft() + e.getTop();})
@@ -277,11 +281,13 @@
 	   			  var width = lastImg.getBoundingRect().left + lastImg.getBoundingRect().width, 
 	   			  			  height = lastImg.getBoundingRect().top + lastImg.getBoundingRect().height;	   			     	
 	   			  	   			  
+	   			  /*
 	   	   	      fc.setWidth( width * 1.10 );
 	   	   	      fc.setHeight( height * 1.10 );	   			  	   			  
+	   			  */
 	   			  
 	   	   		  var border = new fabric.Rect({
-	   	   			 top: 0, left: 0, 
+	   	   			 top: res.globalOffsetH, left: res.globalOffsetW, 
 	   	   			 width: width, height: height, 
 	   	   			 stroke: "white", strokeWidth: 5, 
 	   	   			 fill: "transparent",
@@ -342,55 +348,67 @@
 			  }
 		  }
 		     				  
-		  copyImageChunk(res.ctx, img, res.offsetW + innerOffsetW, res.offsetH + innerOffsetH);
-		     				  
+		  var pos = {copyX: res.copyX, copyY: res.copyY, 
+				  	 offsetW: res.offsetW + innerOffsetW, 
+				  	 offsetH: res.offsetH + innerOffsetH};
+		  copyImageChunk(res.ctx, img, pos);
+		  
+		  var addW = null;
 		  if( res.i == 0 ){
-			  res.offsetW += img.width * .7;
+			  addW = img.width * .7;
 		  }else if( res.i < piecesGrid.length - 1 ){
 			  
 			if( res.j < piecesGrid[res.i].length - 2 && res.j % 2 == 0 ){
-				res.offsetW += img.width * .73;
+				addW = img.width * .73;
 			}
 			
 			if( res.j < piecesGrid[res.i].length - 2 && res.j % 2 == 1 ){
-				res.offsetW += img.width * .61;
+				addW = img.width * .61;
 			}   					   					
 			
 			if( res.j == piecesGrid[res.i].length - 2 ){
-				res.offsetW += img.width * .75;
+				addW = img.width * .75;
 			}   							
 			
 		  }else if(res.i == res.piecesGrid.length - 1){
 			  
 			if( res.j < res.piecesGrid[res.i].length - 2 && res.j % 2 == 0 ){
-				res.offsetW += img.width * .71;
+				addW = img.width * .71;
 			}   					   					   					  
 			
 			if( res.j < res.piecesGrid[res.i].length - 2 && res.j % 2 == 1 ){
-				res.offsetW += img.width * .7;
+				addW = img.width * .7;
 			}   					   					
 			
 			if( res.j == res.piecesGrid[res.i].length - 2 ){
-				res.offsetW += img.width * .7;
+				addW = img.width * .7;
 			}
 			
 		  }
    		  
+		  res.offsetW += addW;
+		  res.copyX += addW;		  		  
 		  res.j += 1;
 		  
    		  if( res.j == piecesGrid[res.i].length ){
    			  
    			  res.i += 1;
-   			  res.j = 0;     			
-   			  res.offsetW = 0;
-   			
+   			  res.j = 0;
+   			  
+   			  res.offsetW = res.globalOffsetW;
+   			  res.copyX = 0;
+   			  
+   			  var addH = null;   			  
    			  if( res.i == 0 ){
-   				res.offsetH += img.height * .92;
+   				addH = img.height * .92;
    			  }else if(res.i == piecesGrid.length - 2){
-   				res.offsetH += img.height * .74;
+   				addH = img.height * .74;
    			  }else{
-   				res.offsetH += img.height * .73;
-   			  }   			  
+   				addH = img.height * .73;
+   			  }  
+   			  
+   			  res.offsetH += addH;
+   			  res.copyY += addH;
    		  }   		  
    		  
    		  window.requestAnimationFrame(function(){   			  
@@ -422,14 +440,15 @@
 	   	  
 	   	  var canvas = document.createElement("canvas"), ctx = canvas.getContext('2d');   	     	     	  
 	     	
-	   	  canvas.width = window.innerWidth - 40;
-	   	  canvas.height = window.innerHeight - 40;   	     	     	  
+	   	  canvas.width = window.innerWidth;
+	   	  canvas.height = window.innerHeight;   	     	     	  
 	   	  
 	      $.when.apply($, imageDfs).done(function(){
-	    	  var res = {ctx: ctx, canvas: canvas, offsetW: 0, offsetH: 0, i: 0, j: 0};
+	    	  var res = {ctx: ctx, canvas: canvas, loadedImages: loadedImages, 
+	    			  	 offsetW: 0, offsetH: 0, i: 0, j: 0, copyX: 0, copyY: 0};
+	    	  var setupResult = setup(ctx, loadedImages, puzzleImage);	    	  	    	 
 	    	  
-	    	  res.loadedImages = loadedImages;
-	    	  res.piecesGrid = setup(ctx, loadedImages, puzzleImage);	    	  
+	    	  res = $.extend(res, setupResult);
 	    	  
 	    	  window.requestAnimationFrame(function(){ iterativeCopy(res); });	    	  
 	      });   		  
