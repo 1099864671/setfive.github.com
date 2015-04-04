@@ -39,7 +39,7 @@
       .main-container {
       	padding: 20px;
       	background: #000;
-      	margin-top: 40px;     	
+      	margin-top: 20px;     	
       }            
                               
       .canvas-container {
@@ -482,8 +482,8 @@
 	   		  _(fabricImages)
 	   		    .filter({isCorrect: false})
 	   		    .forEach(function(img){
-	   			  var left = Math.floor((Math.random() * 800 - 50) + 0); 
-	   			  var top = Math.floor((Math.random() * 600 - 50) + 0);
+	   			  var left = Math.floor( (Math.random() * fc.getWidth() * .80) + 15); 
+	   			  var top = Math.floor( (Math.random() * fc.getHeight() * .80) + 15);
 	   			  img.animate({left: left, top: top}, {onChange: onChange});	   			  
 	   		  }).value();
 	   		  	   		  
