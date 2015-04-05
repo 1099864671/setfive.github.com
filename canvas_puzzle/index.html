@@ -37,9 +37,10 @@
       }
       
       .main-container {
-      	padding: 20px;
+      	margin: 20px;
       	background: #000;
-      	margin-top: 20px;     	
+      	margin-top: 20px;
+      	border: 1px dotted #222;   	
       }            
                               
       .canvas-container {
@@ -93,6 +94,7 @@
       #previewCanvas {
       	margin-top: 15px;
       }
+           
     </style>    
   </head>
   <body>
@@ -126,8 +128,11 @@
   	    
     <script type="text/javascript">    
       
-      var fc = new fabric.Canvas("canvas", {backgroundColor: 'rgb(0, 0, 0)', border: "1px solid white"});      
+      var fc = new fabric.Canvas("canvas", {backgroundColor: 'rgb(0, 0, 0)', border: "1px solid white"});
+      var fcBorder = null;
       var fabricImages = [], imagePromises = [];
+      
+      fc.selection = false; 
       
       fabric.Image.prototype.onMove = function(el){
      	 if( !el.originalCoords ){
@@ -145,9 +150,8 @@
     		 el.set("opacity", .6);
     		 el.isCorrect = true;
     		 
-    		 $(".header-container").animate({"border-top-color": "#337ab7"}, 1000, function(){
-    			 $(".header-container").animate({"border-top-color": "#ffff00"}, 1000);
-    		 });
+    		 fcBorder.set("stroke", "#337ab7");
+    		     		 
     	 }
       };
       
@@ -155,8 +159,6 @@
     	  el.target.onMove(el.target);
       });
       
-      fc.setWidth( window.innerWidth - 40 );
-      fc.setHeight( window.innerHeight - 40 );                 
    	  fc.renderAll();
    	  
    	  function copyImageChunk(ctx, img, pos){
@@ -211,7 +213,7 @@
    	  function setup(ctx, loadedImages, puzzleImage){   		  
    		     		  
    		  var imageHeight = puzzleImage.height, imageWidth = puzzleImage.width;
-   		  var maxHeight = window.innerHeight - 40, maxWidth = window.innerWidth - 40;
+   		  var maxHeight = window.innerHeight - 60, maxWidth = window.innerWidth - 60;
    		  var targetHeight, targetWidth, offsetLeft = 0, offsetTop = 0; 		     		  
    		     		  
    		  fc.setWidth( maxWidth );
@@ -219,16 +221,15 @@
 
    		  if( imageHeight / imageWidth < window.innerHeight / window.innerWidth ){   			  
    			  targetWidth = maxWidth;
-   			  targetHeight = Math.floor( (targetWidth * imageHeight) / imageWidth );
-   			  offsetTop = maxHeight - targetHeight;
+   			  targetHeight = Math.floor( (targetWidth * imageHeight) / imageWidth );   			  
    		  }else{
    			  targetHeight = maxHeight;
-   			  targetWidth = Math.floor( (targetHeight * imageWidth) / imageHeight );
-   			  offsetLeft = (maxWidth - targetWidth) / 4;
-   		  }   		  
-   		  
-   		offsetLeft = 0;
-   		
+   			  targetWidth = Math.floor( (targetHeight * imageWidth) / imageHeight );   			  
+   		  }
+   		   		  
+   		  offsetTop = (maxHeight - (targetHeight * .85)) / 2;
+   		  offsetLeft = (maxWidth - (targetWidth * .9)) / 2;
+   		   		  
    		  var cornerLeft = getImg(loadedImages, "1.png").width * .7, cornerRight = getImg(loadedImages, "9.png").width * .7;   		  
    		  var midLeft = getImg(loadedImages, "2.png").width * .7, midRight = getImg(loadedImages, "3.png").width * .7;   		  
    		  var middleSide = getImg(loadedImages, "4.png").width * .73, cornerBottom = getImg(loadedImages, "7.png").width * .73;
@@ -259,10 +260,9 @@
    			piecesGrid[i] = filledGrid;
    		  }   		     		  
    		     		  
-   		  piecesGrid[ numHeight ] = lastGrid;   		  
-   		  
+   		  piecesGrid[ numHeight ] = lastGrid;   		     		  
    		  ctx.drawImage(puzzleImage, 0, 0, targetWidth, targetHeight);
-   		     		  
+   		     		     		  
    		  return {piecesGrid: piecesGrid, 
   			  	 offsetW: offsetLeft, offsetH: offsetTop, 
   			  	 globalOffsetW: offsetLeft, globalOffsetH: offsetTop};   		     		   		  
@@ -277,18 +277,14 @@
 	   			  var lastImg = _(fabricImages)
 	  			  				 .sortBy(function(e){return e.getLeft() + e.getTop();})
 	  			  				 .reverse().value()[0];
-	   			     			
+	   			     				   			  
 	   			  var width = lastImg.getBoundingRect().left + lastImg.getBoundingRect().width, 
-	   			  			  height = lastImg.getBoundingRect().top + lastImg.getBoundingRect().height;	   			     	
-	   			  	   			  
-	   			  /*
-	   	   	      fc.setWidth( width * 1.10 );
-	   	   	      fc.setHeight( height * 1.10 );	   			  	   			  
-	   			  */
-	   			  
-	   	   		  var border = new fabric.Rect({
-	   	   			 top: res.globalOffsetH, left: res.globalOffsetW, 
-	   	   			 width: width, height: height, 
+	   			  	  height = lastImg.getBoundingRect().top + lastImg.getBoundingRect().height;	   			     	
+	   			  	   			  	   			  
+   				  fcBorder = new fabric.Rect({
+	   	   			 top: res.globalOffsetH, 
+	   	   			 left: res.globalOffsetW, 
+	   	   			 width: width - res.globalOffsetW, height: height - res.globalOffsetH, 
 	   	   			 stroke: "white", strokeWidth: 5, 
 	   	   			 fill: "transparent",
 	   	   			 hasControls: false, lockRotation: true, 
@@ -296,8 +292,9 @@
 	   	   			 hasBorders: false	 
 	   	   		  });
 	   	   		  
-	   	   		  fc.add(border);
-	   	   		  border.sendToBack();	   	   		  
+	   	   		  fc.add(fcBorder);
+	   	   		  fcBorder.sendToBack();
+	   	   		  
 	   	   		  fc.renderAll();
 	   	   		  
 	   	   		  var targetWidth, targetHeight;
@@ -318,7 +315,7 @@
 	   	   		  
 	   	   		  previewCtx.drawImage(res.canvas, 0, 0, targetWidth, targetHeight);
 	   	   		  
-   			  }, 300);
+   			  });
    	   		  
    			  return false;
    		  }
@@ -348,7 +345,7 @@
 			  }
 		  }
 		     				  
-		  var pos = {copyX: res.copyX, copyY: res.copyY, 
+		  var pos = {copyX: res.copyX + innerOffsetW, copyY: res.copyY + innerOffsetH, 
 				  	 offsetW: res.offsetW + innerOffsetW, 
 				  	 offsetH: res.offsetH + innerOffsetH};
 		  copyImageChunk(res.ctx, img, pos);
