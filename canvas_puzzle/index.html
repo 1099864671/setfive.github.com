@@ -27,8 +27,8 @@
     <style>
       
       html, body {
-       width: 100%; 
-       height: 100%; 
+       width: 100%;  
+       height: 100%;
        background-color: #000;
       }
       
@@ -37,477 +37,666 @@
       }
       
       .main-container {
-      	margin: 20px;
-      	background: #000;
-      	margin-top: 20px;
-      	border: 1px dotted #222;   	
+        margin: 20px;
+        background: #000;
+        margin-top: 20px;
+        border: 1px dotted #222;    
       }            
                               
       .canvas-container {
-      	margin: auto;
+        margin: auto;
       }
       
       .header-container {
-      	height: auto;
-      	padding: 12px 20px;
-      	border-top: 6px solid #ffff00;
-      	border-bottom: 1px solid #030303;
-      	background: url("escheresque_ste.png") repeat;
+        height: auto;
+        padding: 12px 20px;
+        border-top: 6px solid #ffff00;
+        border-bottom: 1px solid #030303;
+        background: url("escheresque_ste.png") repeat;
       }
       
       .right-menu {
-      	position: relative;
+        position: relative;
       }
       
       .puzzle-menu {
-      	position: absolute;
-      	right: 0px;
-      	padding: 10px;      	
-      	color: #fff;
-      	width: 400px;
-      	height: 300px;
-      	background-color: rgba(51, 122, 183, .6);
-      	border-top-left-radius: 3px;
-      	border-bottom-left-radius: 3px;
-      	border-bottom-right-radius: 3px;
-      	display: none;
-      	text-align: right;
-      	z-index: 10;
+        position: absolute;
+        right: 0px;
+        padding: 10px;          
+        color: #fff;
+        width: 400px;
+        height: auto;
+        background-color: rgba(51, 122, 183, .6);
+        border-top-left-radius: 3px;
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        display: none;
+        text-align: right;
+        z-index: 10;
       }
       
-      a.btn.open {
-      	border-bottom-left-radius: 0;
-      	border-bottom-right-radius: 0;
-      	border-bottom: 0;      
+      .open .btn {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        border-bottom: 0;      
       }
       
       .logo {
-      	float: left;
-      	width: 300px;
+        float: left;
+        width: 300px;
       }
       
       .right-menu {
-      	float: right;
-      	width: 500px;      	
+        float: right;
+        width: 500px;       
       }
       
       #previewCanvas {
-      	margin-top: 15px;
+        margin-top: 15px;
+        margin-left: auto;
+        margin-right: auto;
       }
-           
+      
+      .launcher-container {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;        
+      }
+      
+      .launcher-container .well {
+        background-color: #222;
+        border: 1px solid #333;
+        color: #fafafa;
+        margin: 0;
+      }
+      
+      .launcher-container h3 {
+        margin-top: 0px;
+      }
+      
+      .launcher-container form {
+        margin-top: 20px;
+      }
+      
+      .launcher-container ul {
+        margin: 0;
+      }
+      
+      .photo-credits {
+        color: #fafafa;
+        text-align: left;
+        margin: 0;
+      }
+      
+      .photo-credits a {
+        color: #fafafa;
+        text-decoration: underline;
+      }
+      
+      .victory-banner {
+        margin-top: 40px;
+      }
+      
+      .victory-banner h3 {
+        margin: 0;
+      }
     </style>    
   </head>
   <body>
-  	
-  	<div class="header-container">
-  		<div class="logo">  		
-  		  <a href="http://www.setfive.com" target="_blank"><img src="logo_noconsulting.png" /></a>
-  		</div>  	
-  		
-  		<div class="right-menu">
-  			<div class="text-right">		
-  				<a href="#" data-provide="show-menu" 
-  					class="btn btn-primary"><span class="glyphicon glyphicon-th-large"></span></a>
-  				<div class="puzzle-menu">
-  					<div class="btn-group">
-  						<button class="btn btn-default" id="shuffle">Shuffle</button>
-  						<button class="btn btn-default" id="giveMe">Give me one!</button>
-  					</div>
-  					
-  					<canvas id="previewCanvas"></canvas>
-  				</div>
-  			</div>
-  		</div>
-  		
-  		<div class="clearfix"></div>	  	  			 
-  	</div>
-  	
-  	<div class="main-container">
-  		<canvas id="canvas"></canvas>
-  	</div>
-  	    
+    
+    <div class="header-container">
+        <div class="logo">          
+          <a href="http://www.setfive.com" target="_blank"><img src="logo_noconsulting.png" /></a>
+        </div>      
+        
+        <div class="right-menu">
+            <div class="text-right">
+                
+                <div data-provide="puzzle-btns" class="btn-group hidden">
+                    <button data-provide="show-menu" class="btn btn-default">Preview</button>
+                    <button class="btn btn-default" id="shuffle">Shuffle</button>
+                    <button class="btn btn-default" id="giveMe">Ask Madden! <small>(Free one)</small></button>
+                    <button class="btn btn-danger" id="reset">Reset</button>
+                </div>
+                                                                
+                <div class="puzzle-menu">                                    
+                    <canvas id="previewCanvas"></canvas>                                        
+                    <ul class="photo-credits list-unstyled">
+                       <li><strong>Photo credits:</strong></li>
+                       <li><a href="https://www.flickr.com/photos/sackton/7897823138" target="_blank">Os Gêmeos [241/366]</a></li>
+                       <li><a href="https://www.flickr.com/photos/aigle_dore/5238549192" target="_blank">Paris</a></li>
+                     </ul>                                                        
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="clearfix"></div>                     
+    </div>
+    
+    <div data-provide="victory-banner" class="victory-banner hidden">
+        <div class="container">
+            <div class="col-md-6 col-md-offset-3 text-center">
+                <div class="alert alert-success"><h3>Victory! Nice Job!</h3></div>
+            </div>
+        </div>    
+    </div>
+    
+    <div class="main-container hidden">
+        <canvas id="canvas"></canvas>
+    </div>
+            
+    <div class="launcher-container">
+      <div class="container">
+        <div class="col-md-6 col-md-offset-3">
+        
+          <div class="well hidden" data-provide="loading">
+            <h3>Sit tight, we're building your puzzle</h3>
+            <div class="progress">
+              <div class="progress-bar" role="progressbar" style="width: 1%;"><span>1%</span></div>
+            </div>              
+          </div>
+        
+          <div class="well" data-provide="select-puzzle">
+            <h3>Make a jigsaw puzzle!</h3>
+            <p>It's jigsaw puzzle time! Upload your own image or solve one of ours.</p>
+            <form data-provide="select-image">
+                <div class="form-group">
+                    <label for="uploadFile">Upload an image</label>
+                    <input type="file" class="form-control" id="uploadFile">
+                </div>
+
+                <div class="form-group">
+                    <label for="imageUrl">Use an image URL</label>
+                    <input type="text" class="form-control" id="imageUrl" placeholder="http://symf.setfive.com/canvas_puzzle/beaconhill.jpg">
+                </div>
+                
+                <div class="form-group">
+                    <label>Solve one of ours!</label>
+                    <ul class="list-unstyled list-inline">
+                    
+                      <li>
+                        <a href="greenway.jpg" data-provide="select-image">
+                          <img src="greenway_small.png" class="thumbnail" />
+                        </a>
+                      </li>
+
+                      <li>
+                        <a href="paris.jpg" data-provide="select-image">
+                          <img src="paris_small.png" class="thumbnail" />
+                        </a>
+                      </li>
+
+                      <li>
+                        <a href="cathederal.jpg" data-provide="select-image">
+                          <img src="cathederal_small.png" class="thumbnail" />
+                        </a>
+                      </li>
+                      
+                    </ul>
+                </div>
+            </form>
+          </div>    
+                
+        </div>
+      </div>
+    </div>
+                
     <script type="text/javascript">    
       
-      var fc = new fabric.Canvas("canvas", {backgroundColor: 'rgb(0, 0, 0)', border: "1px solid white"});
-      var fcBorder = null;
-      var fabricImages = [], imagePromises = [];
-      
-      fc.selection = false; 
+      var fcBorder = null, fc, fabricImages, imagePromises;
       
       fabric.Image.prototype.onMove = function(el){
-     	 if( !el.originalCoords ){
-    		 return;
-    	 }    	     	 
-     	 
-    	 var tl = Math.pow(el.getLeft() - el.originalCoords[0], 2);    	 
-    	 var tt = Math.pow((el.getTop() - el.originalCoords[1]), 2);    	 
-    	 
-    	 if( Math.sqrt(tl + tt) < 10 ){
-    		 el.set("left", el.originalCoords[0]);
-    		 el.set("top", el.originalCoords[1]);    		 
-    		 el.set("lockMovementX", true);
-    		 el.set("lockMovementY", true);
-    		 el.set("opacity", .6);
-    		 el.isCorrect = true;
-    		 
-    		 fcBorder.set("stroke", "#337ab7");
-    		     		 
-    	 }
+         if( !el.originalCoords ){
+             return;
+         }               
+         
+         var tl = Math.pow(el.getLeft() - el.originalCoords[0], 2);      
+         var tt = Math.pow((el.getTop() - el.originalCoords[1]), 2);         
+         
+         if( Math.sqrt(tl + tt) < 10 ){
+             el.set("left", el.originalCoords[0]);
+             el.set("top", el.originalCoords[1]);            
+             el.set("lockMovementX", true);
+             el.set("lockMovementY", true);             
+             el.set("selectable", false);
+             el.sendToBack();
+             el.isCorrect = true;
+             
+             fcBorder.set("stroke", "#337ab7");
+             window.setTimeout(function(){
+                 fcBorder.set("stroke", "#ffffff");
+                 fc.renderAll();
+            }, 1000);
+         
+            if( _(fabricImages).filter({isCorrect: false}).value().length == 0 ){
+                $("[data-provide='victory-banner']").removeClass("hidden");
+            }
+            
+         }
+         
       };
+                       
+      function copyImageChunk(ctx, img, pos){
+        
+          var copiedCanvas = document.createElement("canvas"), copiedCtx = copiedCanvas.getContext('2d');
+          var maskCanvas = document.createElement("canvas"), maskCanvasCtx = maskCanvas.getContext('2d');
+          var w = img.width, h = img.height;
+          
+          maskCanvas.width = w;
+          maskCanvas.height = h;
+
+          copiedCanvas.width = w;
+          copiedCanvas.height = h;            
+          
+          copiedCtx.drawImage(img, 0, 0);
+          maskCanvasCtx.putImageData( ctx.getImageData(pos.copyX, pos.copyY, w, h), 0, 0);
+          
+          copiedCtx.globalCompositeOperation = "source-in";           
+          copiedCtx.drawImage(maskCanvas, 0, 0);                      
+          
+          var df = $.Deferred();
+          imagePromises.push( df );           
+          
+          fabric.Image.fromURL(copiedCanvas.toDataURL("image/png"), function(img) { 
+              
+              img.set("hasBorders", false);
+              img.set("left", pos.offsetW);
+              img.set("top", pos.offsetH);
+                                              
+              img.hasControls = false;
+              img.lockRotation = true;
+              img.lockScalingX = true; 
+              img.lockScalingY = true;                
+              
+              img.originalCoords = [pos.offsetW, pos.offsetH];
+              img.isCorrect = false;
+              
+              fc.add(img);
+              
+              fabricImages.push(img);
+              df.resolve(img);
+          });             
+          
+      }
       
-      fc.on("object:moving", function(el){    	 
-    	  el.target.onMove(el.target);
+      function getImg(loadedImages, el){          
+          return _.find(loadedImages, function(e){
+              return $(e).attr("src") == "puzzle_pieces/" + el;
+          });             
+      }
+      
+      function setup(ctx, loadedImages, puzzleImage){             
+                      
+          var imageHeight = puzzleImage.height, imageWidth = puzzleImage.width;
+          var maxHeight = window.innerHeight - 60, maxWidth = window.innerWidth - 60;
+          var targetHeight, targetWidth, offsetLeft = 0, offsetTop = 0;                       
+                      
+          fc.setWidth( maxWidth );
+          fc.setHeight( maxHeight );                                  
+
+          if( imageHeight / imageWidth < window.innerHeight / window.innerWidth ){                
+              targetWidth = maxWidth;
+              targetHeight = Math.floor( (targetWidth * imageHeight) / imageWidth );              
+          }else{
+              targetHeight = maxHeight;
+              targetWidth = Math.floor( (targetHeight * imageWidth) / imageHeight );              
+          }
+                  
+          offsetTop = (maxHeight - (targetHeight * .85)) / 2;
+          offsetLeft = (maxWidth - (targetWidth * .9)) / 2;
+                  
+          var cornerLeft = getImg(loadedImages, "1.png").width * .7, cornerRight = getImg(loadedImages, "9.png").width * .7;          
+          var midLeft = getImg(loadedImages, "2.png").width * .7, midRight = getImg(loadedImages, "3.png").width * .7;            
+          var middleSide = getImg(loadedImages, "4.png").width * .73, cornerBottom = getImg(loadedImages, "7.png").width * .73;
+          
+          var numWide = 2 + (Math.floor((targetWidth - (cornerLeft + cornerRight)) / (midLeft + midRight)) * 2);
+          var cornerLeftHeight = getImg(loadedImages, "1.png").width * .92;
+          var numHeight = Math.floor((targetHeight - (cornerLeftHeight + cornerBottom)) / middleSide);                                    
+                      
+          var filledGrid = ["4.png"], piecesGrid = [ ["1.png"] ], lastGrid = ["7.png"];
+          
+          for(var j = 1; j < numWide - 1; j++){             
+            if(j % 2 == 0){
+                filledGrid.push("6.png");
+                lastGrid.push("12.png");                
+                piecesGrid[0].push("3.png");                
+            }else{
+                filledGrid.push("5.png");
+                lastGrid.push("11.png");                
+                piecesGrid[0].push("2.png");                
+            }               
+          }
+          
+          filledGrid.push("10.png");
+          piecesGrid[0].push("9.png");
+          lastGrid.push("8.png");
+        
+          for(var i = 1; i < numHeight; i++){
+            piecesGrid[i] = filledGrid;
+          }                       
+                      
+          piecesGrid[ numHeight ] = lastGrid;                         
+          ctx.drawImage(puzzleImage, 0, 0, targetWidth, targetHeight);
+                                  
+          return {piecesGrid: piecesGrid, 
+                 offsetW: offsetLeft, offsetH: offsetTop, 
+                 globalOffsetW: offsetLeft, globalOffsetH: offsetTop};                                
+      }
+      
+      function iterativeCopy(res){
+          
+          if( res.i >= res.piecesGrid.length && res.j == 0 ){
+              
+              $.when.apply($, imagePromises).done(function(){
+                  
+                  var lastImg = _(fabricImages)
+                                 .sortBy(function(e){return e.getLeft() + e.getTop();})
+                                 .reverse().value()[0];
+                                                  
+                  var width = lastImg.getBoundingRect().left + lastImg.getBoundingRect().width, 
+                      height = lastImg.getBoundingRect().top + lastImg.getBoundingRect().height;                        
+                                                  
+                  fcBorder = new fabric.Rect({
+                     top: res.globalOffsetH, 
+                     left: res.globalOffsetW, 
+                     width: width - res.globalOffsetW, height: height - res.globalOffsetH, 
+                     stroke: "white", strokeWidth: 5, 
+                     fill: "transparent",
+                     hasControls: false, lockRotation: true, 
+                     lockMovementX: true, lockMovementY: true, 
+                     hasBorders: false   
+                  });
+                  
+                  fc.add(fcBorder);
+                  fcBorder.sendToBack();
+                  
+                  fc.renderAll();
+                  
+                  var targetWidth, targetHeight;
+                  var previewWidth = $(".puzzle-menu").width(), previewHeight = $(".puzzle-menu").height();               
+                  
+                  if( height / width < previewHeight / previewWidth ){                
+                      targetWidth = previewWidth;
+                      targetHeight = Math.floor( (targetWidth * height) / width );                
+                  }else{
+                      targetHeight = previewHeight;
+                      targetWidth = Math.floor( (targetHeight * imageWidth) / height );
+                  }                           
+                                  
+                  var previewCanvas = $("#previewCanvas")[0], previewCtx = $("#previewCanvas")[0].getContext("2d");
+                  
+                  previewCanvas.width = targetWidth; 
+                  previewCanvas.height = targetHeight;
+                                  
+                  previewCtx.drawImage(res.canvas, 0, 0, targetWidth, targetHeight);
+                  
+                  $("[data-provide='loading']").addClass("hidden");
+                  
+                  $(".main-container").removeClass("hidden");
+                  $("[data-provide='puzzle-btns']").removeClass("hidden");
+                  
+                  window.setTimeout(function(){
+                      $("#shuffle").click();
+                      fc.calcOffset();
+                  }, 1000);
+              });
+              
+              return false;
+          }
+                      
+          var piecesGrid = res.piecesGrid;
+          var img = null;
+          
+          innerOffsetH = 0, innerOffsetW = 0;
+                
+          img = getImg( res.loadedImages, piecesGrid[res.i][res.j] );
+                              
+          if(res.i == 0 && res.j == 1){
+              innerOffsetW = -4;
+          }
+          
+          if( res.i > 0 ){            
+              if( res.j > 0 && res.j % 2 == 0 ){
+                innerOffsetH = 0;                   
+              }
+              
+              if( res.j > 0 && res.j % 2 == 1 ){
+                innerOffsetH = -30;                         
+              }
+              
+              if( res.j == piecesGrid[res.i].length - 1 ){
+                innerOffsetH = -29;
+              }
+          }
+                              
+          var pos = {copyX: res.copyX + innerOffsetW, copyY: res.copyY + innerOffsetH, 
+                     offsetW: res.offsetW + innerOffsetW, 
+                     offsetH: res.offsetH + innerOffsetH};
+          
+          copyImageChunk(res.ctx, img, pos);
+          
+          var addW = null;
+          if( res.i == 0 ){
+              addW = img.width * .7;
+          }else if( res.i < piecesGrid.length - 1 ){
+              
+            if( res.j < piecesGrid[res.i].length - 2 && res.j % 2 == 0 ){
+                addW = img.width * .73;
+            }
+            
+            if( res.j < piecesGrid[res.i].length - 2 && res.j % 2 == 1 ){
+                addW = img.width * .61;
+            }                                           
+            
+            if( res.j == piecesGrid[res.i].length - 2 ){
+                addW = img.width * .75;
+            }                               
+            
+          }else if(res.i == res.piecesGrid.length - 1){
+              
+            if( res.j < res.piecesGrid[res.i].length - 2 && res.j % 2 == 0 ){
+                addW = img.width * .71;
+            }                                                                 
+            
+            if( res.j < res.piecesGrid[res.i].length - 2 && res.j % 2 == 1 ){
+                addW = img.width * .7;
+            }                                           
+            
+            if( res.j == res.piecesGrid[res.i].length - 2 ){
+                addW = img.width * .7;
+            }
+            
+          }
+          
+          res.offsetW += addW;
+          res.copyX += addW;                  
+          res.j += 1;
+          
+          if( res.j == piecesGrid[res.i].length ){
+              
+              res.i += 1;
+              res.j = 0;
+              
+              res.offsetW = res.globalOffsetW;
+              res.copyX = 0;
+              
+              var addH = null;                
+              if( res.i == 0 ){
+                addH = img.height * .92;
+              }else if(res.i == piecesGrid.length - 2){
+                addH = img.height * .74;
+              }else{
+                addH = img.height * .73;
+              }  
+              
+              res.offsetH += addH;
+              res.copyY += addH;
+          }           
+          
+          var percentComplete = Math.floor( (fabricImages.length / (piecesGrid.length * piecesGrid[0].length)) * 100 );
+          percentComplete = Math.floor(percentComplete / 2) * 2;          
+          
+          $(".progress-bar").css("width", percentComplete + "%");
+          $(".progress-bar span").text( percentComplete + "%" );
+          
+          window.requestAnimationFrame(function(){                
+              iterativeCopy(res); 
+          });
+      }
+      
+      function bootstrap( imageUrl, loadedImages ){       
+          var imageDfs = _.pluck(loadedImages, "df");         
+          var df = $.Deferred();
+          
+          imageDfs.push(df);
+          
+          var puzzleImage = new Image();
+          puzzleImage.src = imageUrl;       
+          puzzleImage.addEventListener("load", function(){ df.resolve(this); });
+          
+          var canvas = document.createElement("canvas"), ctx = canvas.getContext('2d');                       
+            
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;                         
+          
+          $.when.apply($, imageDfs).done(function(){
+              var res = {ctx: ctx, canvas: canvas, loadedImages: loadedImages, 
+                         offsetW: 0, offsetH: 0, i: 0, j: 0, copyX: 0, copyY: 0};
+              var setupResult = setup(ctx, loadedImages, puzzleImage);                       
+              
+              res = $.extend(res, setupResult);
+              
+              window.requestAnimationFrame(function(){ iterativeCopy(res); });            
+          });             
+      }
+      
+      function init(){
+          fc = new fabric.Canvas("canvas", {backgroundColor: 'rgb(0, 0, 0)', border: "1px solid white"});
+          fc.selection = false; 
+
+          fabricImages = [];
+          imagePromises = [];
+          
+          $(".progress-bar").css("width", "1%");
+          $(".progress-bar span").text( "1%" );          
+          
+          fc.on("object:moving", function(el){
+              if( el.target.onMove ){
+                el.target.onMove(el.target);
+              }
+          });
+          
+          fc.renderAll();          
+      }      
+      
+      $(document).ready(function(){           
+        
+          var loadedImages = 
+              _(["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", 
+                  "7.png", "8.png", "9.png", "10.png", "11.png", "12.png"])
+               .map(function(src){
+                  var img = new Image();          
+                  img.src = "puzzle_pieces/" + src;
+                  img.df = $.Deferred();
+                  
+                  img.addEventListener("load", function(){img.df.resolve(this);});        
+                  return img;
+          }).value();             
+          
+          $("[data-provide='select-image']").click(function(){
+              
+              $("[data-provide='select-puzzle']").addClass("hidden");
+              $("[data-provide='loading']").removeClass("hidden");
+              
+              bootstrap( $(this).attr("href").replace("#", ""), loadedImages );
+              
+              return false;
+          });
+          
+          $("[data-provide='show-menu']").click(function(){
+              
+              var group = $(this).parents(".btn-group");
+              
+              if( $(group).hasClass("open") ){
+                $(".puzzle-menu").hide();
+                $(group).removeClass("open");
+                $(this).text("Preview");
+              }else{
+                $(".puzzle-menu").show();
+                $(group).addClass("open");
+                $(this).text("Hide");
+              }
+              
+              return false;
+          });
+          
+          $("#reset").click(function(){
+              
+              if( !confirm("Are you sure?") ){
+                  return false;
+              }
+              
+              var canvas = $("#canvas")[0], ctx = $("#canvas")[0].getContext("2d");
+              ctx.clearRect(0,0,canvas.width, canvas.height);
+              
+              $("[data-provide='show-menu']").click();
+              $("[data-provide='select-puzzle']").removeClass("hidden");
+              $(".main-container").addClass("hidden");              
+              $("[data-provide='victory-banner']").addClass("hidden");
+              
+              $("[data-provide='puzzle-btns']").addClass("hidden");              
+              if( $("[data-provide='puzzle-btns']").hasClass("open") ){
+                  $("[data-provide='show-menu']").click();
+              }
+              
+              init();
+              
+              return false;
+          });           
+          
+          $("#giveMe").click(function(){
+             
+              var img = _(fabricImages).filter({isCorrect: false}).shuffle().value()[0];
+              
+              if( !img ){
+                  return false;
+              }
+              
+              var onChange = function(){              
+                    window.requestAnimationFrame(function(){
+                        fc.renderAll.bind(fc)();
+              });};               
+              
+              img.animate({left: img.originalCoords[0], top: img.originalCoords[1]}, 
+                          {onComplete: function(e){img.onMove(img);}, onChange: onChange});
+            
+              return false;
+          });
+          
+          $("#shuffle").click(function(){
+              
+              var onChange = function(){              
+                window.requestAnimationFrame(function(){
+                    fc.renderAll.bind(fc)();
+                });             
+              };
+              
+              _(fabricImages)
+                .filter({isCorrect: false})
+                .forEach(function(img){
+                  var left = Math.floor( (Math.random() * fc.getWidth() * .75) + (fc.getWidth() * .05) ); 
+                  var top = Math.floor( (Math.random() * fc.getHeight() * .75) + (fc.getHeight() * .05) );
+                  img.animate({left: left, top: top}, {onChange: onChange});                  
+              }).value();
+                          
+              return false;
+          });
+      
+          init();
       });
       
-   	  fc.renderAll();
-   	  
-   	  function copyImageChunk(ctx, img, pos){
-   		
-   	   	  var copiedCanvas = document.createElement("canvas"), copiedCtx = copiedCanvas.getContext('2d');
-   	   	  var maskCanvas = document.createElement("canvas"), maskCanvasCtx = maskCanvas.getContext('2d');
-   	   	  var w = img.width, h = img.height;
-   	   	  
-   		  maskCanvas.width = w;
-   		  maskCanvas.height = h;
-
-   		  copiedCanvas.width = w;
-   		  copiedCanvas.height = h;   		  
-   		  
-   		  copiedCtx.drawImage(img, 0, 0);
-   		  maskCanvasCtx.putImageData( ctx.getImageData(pos.copyX, pos.copyY, w, h), 0, 0);
-   		  
-   		  copiedCtx.globalCompositeOperation = "source-in";  		  
-   		  copiedCtx.drawImage(maskCanvas, 0, 0);   		     		  
-   		  
-   		  var df = $.Deferred();
-   		  imagePromises.push( df );   		  
-   		  
-   		  fabric.Image.fromURL(copiedCanvas.toDataURL("image/png"), function(img) { 
-   			  
-   			  img.set("hasBorders", false);
-   			  img.set("left", pos.offsetW);
-   			  img.set("top", pos.offsetH);
-   			     			     			  
-   			  img.hasControls = false;
-   			  img.lockRotation = true;
-   			  img.lockScalingX = true; 
-   			  img.lockScalingY = true;   			  
-   			  
-   			  img.originalCoords = [pos.offsetW, pos.offsetH];
-   			  img.isCorrect = false;
-   			  
-   			  fc.add(img);
-   			  
-   			  fabricImages.push(img);
-   			  df.resolve(img);
-   		  });   		  
-   		  
-   	  }
-   	  
-   	  function getImg(loadedImages, el){   		  
-   		  return _.find(loadedImages, function(e){
-   			  return $(e).attr("src") == "puzzle_pieces/" + el;
-   		  });   		  
-   	  }
-   	  
-   	  function setup(ctx, loadedImages, puzzleImage){   		  
-   		     		  
-   		  var imageHeight = puzzleImage.height, imageWidth = puzzleImage.width;
-   		  var maxHeight = window.innerHeight - 60, maxWidth = window.innerWidth - 60;
-   		  var targetHeight, targetWidth, offsetLeft = 0, offsetTop = 0; 		     		  
-   		     		  
-   		  fc.setWidth( maxWidth );
-   	   	  fc.setHeight( maxHeight );	   			  	   			  
-
-   		  if( imageHeight / imageWidth < window.innerHeight / window.innerWidth ){   			  
-   			  targetWidth = maxWidth;
-   			  targetHeight = Math.floor( (targetWidth * imageHeight) / imageWidth );   			  
-   		  }else{
-   			  targetHeight = maxHeight;
-   			  targetWidth = Math.floor( (targetHeight * imageWidth) / imageHeight );   			  
-   		  }
-   		   		  
-   		  offsetTop = (maxHeight - (targetHeight * .85)) / 2;
-   		  offsetLeft = (maxWidth - (targetWidth * .9)) / 2;
-   		   		  
-   		  var cornerLeft = getImg(loadedImages, "1.png").width * .7, cornerRight = getImg(loadedImages, "9.png").width * .7;   		  
-   		  var midLeft = getImg(loadedImages, "2.png").width * .7, midRight = getImg(loadedImages, "3.png").width * .7;   		  
-   		  var middleSide = getImg(loadedImages, "4.png").width * .73, cornerBottom = getImg(loadedImages, "7.png").width * .73;
-   		  
-   		  var numWide = 2 + (Math.floor((targetWidth - (cornerLeft + cornerRight)) / (midLeft + midRight)) * 2);
-   		  var cornerLeftHeight = getImg(loadedImages, "1.png").width * .92;
-   		  var numHeight = Math.floor((targetHeight - (cornerLeftHeight + cornerBottom)) / middleSide);   		     		     		  
-   		     		  
-   		  var filledGrid = ["4.png"], piecesGrid = [ ["1.png"] ], lastGrid = ["7.png"];
-   		  
-   		  for(var j = 1; j < numWide - 1; j++){   			
-   			if(j % 2 == 0){
-   				filledGrid.push("6.png");
-   				lastGrid.push("12.png");   				
-   				piecesGrid[0].push("3.png");   				
-   			}else{
-   				filledGrid.push("5.png");
-   				lastGrid.push("11.png");   				
-   				piecesGrid[0].push("2.png");   				
-   			}   			
-   		  }
-   		  
-   		  filledGrid.push("10.png");
-   		  piecesGrid[0].push("9.png");
-   		  lastGrid.push("8.png");
-   		
-   		  for(var i = 1; i < numHeight; i++){
-   			piecesGrid[i] = filledGrid;
-   		  }   		     		  
-   		     		  
-   		  piecesGrid[ numHeight ] = lastGrid;   		     		  
-   		  ctx.drawImage(puzzleImage, 0, 0, targetWidth, targetHeight);
-   		     		     		  
-   		  return {piecesGrid: piecesGrid, 
-  			  	 offsetW: offsetLeft, offsetH: offsetTop, 
-  			  	 globalOffsetW: offsetLeft, globalOffsetH: offsetTop};   		     		   		  
-   	  }
-   	  
-   	  function iterativeCopy(res){
-   		  
-   		  if( res.i >= res.piecesGrid.length && res.j == 0 ){
-   			  
-   			  $.when.apply($, imagePromises).done(function(){
-   				  
-	   			  var lastImg = _(fabricImages)
-	  			  				 .sortBy(function(e){return e.getLeft() + e.getTop();})
-	  			  				 .reverse().value()[0];
-	   			     				   			  
-	   			  var width = lastImg.getBoundingRect().left + lastImg.getBoundingRect().width, 
-	   			  	  height = lastImg.getBoundingRect().top + lastImg.getBoundingRect().height;	   			     	
-	   			  	   			  	   			  
-   				  fcBorder = new fabric.Rect({
-	   	   			 top: res.globalOffsetH, 
-	   	   			 left: res.globalOffsetW, 
-	   	   			 width: width - res.globalOffsetW, height: height - res.globalOffsetH, 
-	   	   			 stroke: "white", strokeWidth: 5, 
-	   	   			 fill: "transparent",
-	   	   			 hasControls: false, lockRotation: true, 
-	   	   			 lockMovementX: true, lockMovementY: true, 
-	   	   			 hasBorders: false	 
-	   	   		  });
-	   	   		  
-	   	   		  fc.add(fcBorder);
-	   	   		  fcBorder.sendToBack();
-	   	   		  
-	   	   		  fc.renderAll();
-	   	   		  
-	   	   		  var targetWidth, targetHeight;
-	   	   		  var previewWidth = $(".puzzle-menu").width(), previewHeight = $(".puzzle-menu").height();	   	   		  
-	   	   		  
-	   	   		  if( height / width < previewHeight / previewWidth ){   			  
-	   	   			  targetWidth = previewWidth;
-	   	   			  targetHeight = Math.floor( (targetWidth * height) / width );   			  
-	   	   		  }else{
-	   	   			  targetHeight = previewHeight;
-	   	   			  targetWidth = Math.floor( (targetHeight * imageWidth) / height );
-	   	   		  }   		  	   	   		  
-	   	   		  
-	   	   		  var previewCanvas = $("#previewCanvas")[0], previewCtx = $("#previewCanvas")[0].getContext("2d");
-	   	   		  
-	   	   		  previewCanvas.width = targetWidth; 
-	   	   		  previewCanvas.height = targetHeight;
-	   	   		  
-	   	   		  previewCtx.drawImage(res.canvas, 0, 0, targetWidth, targetHeight);
-	   	   		  
-   			  });
-   	   		  
-   			  return false;
-   		  }
-   		     		  
-   		  var piecesGrid = res.piecesGrid;
-   		  var img = null;
-   		  
-		  innerOffsetH = 0, innerOffsetW = 0;
- 				
-		  img = getImg( res.loadedImages, piecesGrid[res.i][res.j] );
-		     				  
-		  if(res.i == 0 && res.j == 1){
-			  innerOffsetW = -4;
-		  }
-		  
-		  if( res.i > 0 ){			  
-			  if( res.j > 0 && res.j % 2 == 0 ){
-				innerOffsetH = 0;					
-			  }
-			  
-			  if( res.j > 0 && res.j % 2 == 1 ){
-				innerOffsetH = -30;   						
-			  }
-			  
-			  if( res.j == piecesGrid[res.i].length - 1 ){
-				innerOffsetH = -29;
-			  }
-		  }
-		     				  
-		  var pos = {copyX: res.copyX + innerOffsetW, copyY: res.copyY + innerOffsetH, 
-				  	 offsetW: res.offsetW + innerOffsetW, 
-				  	 offsetH: res.offsetH + innerOffsetH};
-		  copyImageChunk(res.ctx, img, pos);
-		  
-		  var addW = null;
-		  if( res.i == 0 ){
-			  addW = img.width * .7;
-		  }else if( res.i < piecesGrid.length - 1 ){
-			  
-			if( res.j < piecesGrid[res.i].length - 2 && res.j % 2 == 0 ){
-				addW = img.width * .73;
-			}
-			
-			if( res.j < piecesGrid[res.i].length - 2 && res.j % 2 == 1 ){
-				addW = img.width * .61;
-			}   					   					
-			
-			if( res.j == piecesGrid[res.i].length - 2 ){
-				addW = img.width * .75;
-			}   							
-			
-		  }else if(res.i == res.piecesGrid.length - 1){
-			  
-			if( res.j < res.piecesGrid[res.i].length - 2 && res.j % 2 == 0 ){
-				addW = img.width * .71;
-			}   					   					   					  
-			
-			if( res.j < res.piecesGrid[res.i].length - 2 && res.j % 2 == 1 ){
-				addW = img.width * .7;
-			}   					   					
-			
-			if( res.j == res.piecesGrid[res.i].length - 2 ){
-				addW = img.width * .7;
-			}
-			
-		  }
-   		  
-		  res.offsetW += addW;
-		  res.copyX += addW;		  		  
-		  res.j += 1;
-		  
-   		  if( res.j == piecesGrid[res.i].length ){
-   			  
-   			  res.i += 1;
-   			  res.j = 0;
-   			  
-   			  res.offsetW = res.globalOffsetW;
-   			  res.copyX = 0;
-   			  
-   			  var addH = null;   			  
-   			  if( res.i == 0 ){
-   				addH = img.height * .92;
-   			  }else if(res.i == piecesGrid.length - 2){
-   				addH = img.height * .74;
-   			  }else{
-   				addH = img.height * .73;
-   			  }  
-   			  
-   			  res.offsetH += addH;
-   			  res.copyY += addH;
-   		  }   		  
-   		  
-   		  window.requestAnimationFrame(function(){   			  
-   			  iterativeCopy(res); 
-   		  });
-   	  }
-   	  
-   	  function bootstrap(){
-	      var loadedImages = 
-	    	  _(["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", 
-	    	      "7.png", "8.png", "9.png", "10.png", "11.png", "12.png"])
-	     	   .map(function(src){
-		    	  var img = new Image();    	  
-		    	  img.src = "puzzle_pieces/" + src;
-		    	  img.df = $.Deferred();
-		    	  
-		    	  img.addEventListener("load", function(){img.df.resolve(this);});    	  
-		    	  return img;
-	   	  }).value();      
-	      
-	      var imageDfs = _.pluck(loadedImages, "df");      
-	   	  
-	      var df = $.Deferred();
-	   	  imageDfs.push(df);
-	   	  
-	   	  var puzzleImage = new Image();
-	   	  puzzleImage.src = "beaconhill.jpg";   	
-	   	  puzzleImage.addEventListener("load", function(){ df.resolve(this); });
-	   	  
-	   	  var canvas = document.createElement("canvas"), ctx = canvas.getContext('2d');   	     	     	  
-	     	
-	   	  canvas.width = window.innerWidth;
-	   	  canvas.height = window.innerHeight;   	     	     	  
-	   	  
-	      $.when.apply($, imageDfs).done(function(){
-	    	  var res = {ctx: ctx, canvas: canvas, loadedImages: loadedImages, 
-	    			  	 offsetW: 0, offsetH: 0, i: 0, j: 0, copyX: 0, copyY: 0};
-	    	  var setupResult = setup(ctx, loadedImages, puzzleImage);	    	  	    	 
-	    	  
-	    	  res = $.extend(res, setupResult);
-	    	  
-	    	  window.requestAnimationFrame(function(){ iterativeCopy(res); });	    	  
-	      });   		  
-   	  }
-   	  
-   	  $(document).ready(function(){
-   		  
-   		  bootstrap();
-   		
-   		  $("[data-provide='show-menu']").click(function(){
-   			  
-   			  if( $(this).hasClass("open") ){
-   				$(".puzzle-menu").hide();
-       		    $(this).removeClass("open");   				  
-   			  }else{
-   			  	$(".puzzle-menu").show();
-   			  	$(this).addClass("open");
-   			  }
-   			  
-   			  return false;
-   		  });
-   		  
-   		  $("#giveMe").click(function(){
-   			 
-   			  var img = _(fabricImages).filter({isCorrect: false}).shuffle().value()[0];
-   			  
-   			  if( !img ){
-   				  return false;
-   			  }
-   			  
-	   		  var onChange = function(){   			  
-		  		    window.requestAnimationFrame(function(){
-		  		    	fc.renderAll.bind(fc)();
-		  	  });};   			  
-   			  
-		  	  img.animate({left: img.originalCoords[0], top: img.originalCoords[1]}, 
-		  			  	  {onComplete: function(e){img.onMove(img);}, onChange: onChange});
-		  	
-   			  return false;
-   		  });
-   		  
-	   	  $("#shuffle").click(function(){
-	   		  
-	   		  var onChange = function(){   			  
-	  		    window.requestAnimationFrame(function(){
-	  		    	fc.renderAll.bind(fc)();
-	   			});   			
-	   		  };
-	   		  
-	   		  _(fabricImages)
-	   		    .filter({isCorrect: false})
-	   		    .forEach(function(img){
-	   			  var left = Math.floor( (Math.random() * fc.getWidth() * .80) + 15); 
-	   			  var top = Math.floor( (Math.random() * fc.getHeight() * .80) + 15);
-	   			  img.animate({left: left, top: top}, {onChange: onChange});	   			  
-	   		  }).value();
-	   		  	   		  
-	   		  return false;
-	   	  });
-      
-   	  });
-   	  
     </script>
         
   </body>
