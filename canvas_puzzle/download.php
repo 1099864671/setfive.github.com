@@ -23,7 +23,7 @@ $numChars = 4;
 
 do {
 	
-	$targetFilaname = "";	
+	$targetFilaname = "downloaded_";	
 	for($i = 0; $i < $numChars; $i++){
 		$targetFilaname .= chr( rand(65, 90) );
 	}

@@ -413,8 +413,8 @@
                   
                   var lastImg = _(fabricImages)
                                  .sortBy(function(e){return e.getLeft() + e.getTop();})
-                                 .reverse().value()[0];
-                                                  
+                                 .reverse().value()[0];                  
+                  
                   var width = lastImg.getBoundingRect().left + lastImg.getBoundingRect().width, 
                       height = lastImg.getBoundingRect().top + lastImg.getBoundingRect().height;                        
                                                   
@@ -442,7 +442,7 @@
                       targetHeight = Math.floor( (targetWidth * height) / width );                
                   }else{
                       targetHeight = previewHeight;
-                      targetWidth = Math.floor( (targetHeight * imageWidth) / height );
+                      targetWidth = Math.floor( (targetHeight * width) / height );
                   }                           
                                   
                   var previewCanvas = $("#previewCanvas")[0], previewCtx = $("#previewCanvas")[0].getContext("2d");
