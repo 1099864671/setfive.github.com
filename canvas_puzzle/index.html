@@ -198,7 +198,7 @@
           <div class="well hidden" data-provide="loading">
             <h3>Sit tight, we're building your puzzle</h3>
             <div class="progress">
-              <div class="progress-bar" role="progressbar" style="width: 1%;"><span>1%</span></div>
+              <div data-provide="puzzle-progress" class="progress-bar" role="progressbar" style="width: 1%;"><span>1%</span></div>
             </div>              
           </div>
         
@@ -220,6 +220,11 @@
                         <button type="submit" class="btn btn-primary">Build Puzzle</button>
                       </span>
                     </div>
+                    
+		            <div class="progress hidden">
+		              <div data-provide="url-progress" class="progress-bar" role="progressbar" style="width: 1%;"><span>1%</span></div>
+		            </div>                    
+		                                
                 </div>
                                 
                 <div class="form-group">
@@ -558,8 +563,8 @@
           var percentComplete = Math.floor( (fabricImages.length / (piecesGrid.length * piecesGrid[0].length)) * 100 );
           percentComplete = Math.floor(percentComplete / 2) * 2;          
           
-          $(".progress-bar").css("width", percentComplete + "%");
-          $(".progress-bar span").text( percentComplete + "%" );
+          $("[data-provide='puzzle-progress']").css("width", percentComplete + "%");
+          $("[data-provide='puzzle-progress'] span").text( percentComplete + "%" );
           
           window.requestAnimationFrame(function(){                
               iterativeCopy(res); 
@@ -599,8 +604,8 @@
           fabricImages = [];
           imagePromises = [];
           
-          $(".progress-bar").css("width", "1%");
-          $(".progress-bar span").text( "1%" );          
+          $("[data-provide='puzzle-progress']").css("width", "1%");
+          $("[data-provide='puzzle-progress'] span").text( "1%" );          
           
           fc.on("object:moving", function(el){
               if( el.target.onMove ){
@@ -634,14 +639,42 @@
                  return false;
              }
              
-             $.post("download.php", {url: url}, function(result){                 
+             var inputGroup = $(this).find(".input-group:first"); 
+             var progressDiv = $(this).find(".progress"); 
+                 
+             inputGroup.addClass("hidden");             
+             progressDiv.removeClass("hidden");
+             
+             var showUrlField = function(){
+                 inputGroup.removeClass("hidden");             
+                 progressDiv.addClass("hidden");
+             };
+             
+             var xhr = $.post("download.php", {url: url}, function(result){                 
+                 showUrlField();                 
                  if( result.error ){
-                     errorDiv.removeClass("hidden").text(result.error);
+                     errorDiv.removeClass("hidden").text(result.error);                     
                  }else{
                      bootstrap(result.filename, loadedImages);
                  }                 
-             });
+             });             
              
+             var ticks = 1;
+             var timer = window.setInterval(function(){
+                 var at = Math.ceil( (ticks / 100) * 100 );
+                 ticks += 1;                 
+                 
+                 progressDiv.find(".progress-bar").css("width", at);
+                 progressDiv.find("span").text(at);                 
+                 
+                 if( ticks > 100 ){
+                     window.clearInterval(timer);
+                     showUrlField();
+                     errorDiv.removeClass("hidden").text("Sorry! There was a problem loading your image.");
+                     xhr.abort();
+                 }
+             }, 300);
+                          
              return false;
           });
           
@@ -683,14 +716,19 @@
               ctx.clearRect(0,0,canvas.width, canvas.height);
               
               $("[data-provide='show-menu']").click();
-              $("[data-provide='select-puzzle']").removeClass("hidden");
-              $(".main-container").addClass("hidden");              
+              $(".main-container").addClass("hidden");
+              
+              $("[data-provide='select-puzzle']").removeClass("hidden");                           
               $("[data-provide='victory-banner']").addClass("hidden");
               
               $("[data-provide='puzzle-btns']").addClass("hidden");              
               if( $("[data-provide='puzzle-btns']").hasClass("open") ){
                   $("[data-provide='show-menu']").click();
               }
+              
+              $("[data-provide='select-image-form'] .input-group").removeClass("hidden");
+              $("[data-provide='select-image-form'] .progress").addClass("hidden");
+              $("[data-provide='select-image-form'] [data-provide='url-error']").text("");
               
               init();
               
