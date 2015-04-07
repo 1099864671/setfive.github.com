@@ -571,7 +571,10 @@
           });
       }
       
-      function bootstrap( imageUrl, loadedImages ){       
+      function bootstrap( imageUrl, loadedImages ){
+          
+          window.location.hash = imageUrl;
+          
           var imageDfs = _.pluck(loadedImages, "df");         
           var df = $.Deferred();
           
@@ -629,6 +632,11 @@
                   img.addEventListener("load", function(){img.df.resolve(this);});        
                   return img;
           }).value();             
+          
+          var windowHash = window.location.hash.replace("#", "");
+          if( windowHash.length ){
+              bootstrap(windowHash, loadedImages);
+          }
           
           $("[data-provide='select-image-form']").submit(function(){
              var url = $(this).find("#imageUrl").val();
