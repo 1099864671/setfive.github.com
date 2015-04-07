@@ -141,6 +141,15 @@
       .victory-banner h3 {
         margin: 0;
       }
+      
+      input[type='file'] {
+        height: auto;
+      }
+      
+      .select-image-form .alert-danger {
+        padding: 10px;
+        margin-bottom: 10px;
+      }
     </style>    
   </head>
   <body>
@@ -161,12 +170,7 @@
                 </div>
                                                                 
                 <div class="puzzle-menu">                                    
-                    <canvas id="previewCanvas"></canvas>                                        
-                    <ul class="photo-credits list-unstyled">
-                       <li><strong>Photo credits:</strong></li>
-                       <li><a href="https://www.flickr.com/photos/sackton/7897823138" target="_blank">Os Gêmeos [241/366]</a></li>
-                       <li><a href="https://www.flickr.com/photos/aigle_dore/5238549192" target="_blank">Paris</a></li>
-                     </ul>                                                        
+                    <canvas id="previewCanvas"></canvas>                                                        
                 </div>
                 
             </div>
@@ -199,43 +203,59 @@
           </div>
         
           <div class="well" data-provide="select-puzzle">
+            
             <h3>Make a jigsaw puzzle!</h3>
-            <p>It's jigsaw puzzle time! Upload your own image or solve one of ours.</p>
-            <form data-provide="select-image">
-                <div class="form-group">
-                    <label for="uploadFile">Upload an image</label>
-                    <input type="file" class="form-control" id="uploadFile">
-                </div>
+            <p>It's jigsaw puzzle time! Use an online image or solve one of ours.</p>
+            
+            <form class="select-image-form" data-provide="select-image-form">
 
                 <div class="form-group">
                     <label for="imageUrl">Use an image URL</label>
-                    <input type="text" class="form-control" id="imageUrl" placeholder="http://symf.setfive.com/canvas_puzzle/beaconhill.jpg">
+                    
+                    <div class="alert alert-danger hidden" data-provide="url-error"></div>
+                    
+                    <div class="input-group">
+                      <input type="text" class="form-control" id="imageUrl" placeholder="http://symf.setfive.com/canvas_puzzle/beaconhill.jpg">
+                      <span class="input-group-btn">
+                        <button type="submit" class="btn btn-primary">Build Puzzle</button>
+                      </span>
+                    </div>
                 </div>
-                
+                                
                 <div class="form-group">
                     <label>Solve one of ours!</label>
                     <ul class="list-unstyled list-inline">
                     
                       <li>
                         <a href="greenway.jpg" data-provide="select-image">
-                          <img src="greenway_small.png" class="thumbnail" />
+                          <img src="images/greenway_small.png" class="thumbnail" />
                         </a>
                       </li>
 
                       <li>
-                        <a href="paris.jpg" data-provide="select-image">
-                          <img src="paris_small.png" class="thumbnail" />
+                        <a href="yellowstone.jpg" data-provide="select-image">
+                          <img src="images/yellowstone_small.png" class="thumbnail" />
                         </a>
                       </li>
 
                       <li>
                         <a href="cathederal.jpg" data-provide="select-image">
-                          <img src="cathederal_small.png" class="thumbnail" />
+                          <img src="images/cathederal_small.png" class="thumbnail" />
                         </a>
                       </li>
                       
                     </ul>
                 </div>
+                
+                <div class="form-group">
+	                <ul class="photo-credits list-unstyled">
+	                   <li><strong>Photo credits:</strong></li>
+	                   <li><a href="https://www.flickr.com/photos/sackton/7897823138" target="_blank">Os Gêmeos [241/366]</a></li>
+	                   <li><a href="https://www.flickr.com/photos/daveynin/5270798581" target="_blank">Morning Glory Pool, Yellowstone National Park</a></li>
+	                   <li><a href="https://www.flickr.com/photos/118118485@N05/12643999085" target="_blank">Lancaster Cathedral</a></li>
+	                 </ul>                
+                </div>
+                
             </form>
           </div>    
                 
@@ -553,7 +573,7 @@
           imageDfs.push(df);
           
           var puzzleImage = new Image();
-          puzzleImage.src = imageUrl;       
+          puzzleImage.src = "images/" + imageUrl;       
           puzzleImage.addEventListener("load", function(){ df.resolve(this); });
           
           var canvas = document.createElement("canvas"), ctx = canvas.getContext('2d');                       
@@ -605,8 +625,29 @@
                   return img;
           }).value();             
           
-          $("[data-provide='select-image']").click(function(){
+          $("[data-provide='select-image-form']").submit(function(){
+             var url = $(this).find("#imageUrl").val();
+             var errorDiv = $("[data-provide='url-error']");
+                          
+             if( url.length == 0 ){
+                 errorDiv.removeClass("hidden").text("Sorry! You need to enter a URL.");
+                 return false;
+             }
+             
+             $.post("download.php", {url: url}, function(result){                 
+                 if( result.error ){
+                     errorDiv.removeClass("hidden").text(result.error);
+                 }else{
+                     bootstrap(result.filename, loadedImages);
+                 }                 
+             });
+             
+             return false;
+          });
+          
+          $("a[data-provide='select-image']").click(function(){
               
+              $("[data-provide='url-error']").addClass("hidden");
               $("[data-provide='select-puzzle']").addClass("hidden");
               $("[data-provide='loading']").removeClass("hidden");
               
