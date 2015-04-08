@@ -165,7 +165,7 @@
                 <div data-provide="puzzle-btns" class="btn-group hidden">
                     <button data-provide="show-menu" class="btn btn-default">Preview</button>
                     <button class="btn btn-default" id="shuffle">Shuffle</button>
-                    <button class="btn btn-default" id="giveMe">Ask Madden! <small>(Free one)</small></button>
+                    <button class="btn btn-default" id="giveMe">Ask Madden! <small>(Free piece)</small></button>
                     <button class="btn btn-danger" id="reset">Reset</button>
                 </div>
                                                                 
@@ -619,6 +619,12 @@
           fc.renderAll();          
       }      
       
+      function showLoadingScreen(){
+          $("[data-provide='url-error']").addClass("hidden");
+          $("[data-provide='select-puzzle']").addClass("hidden");
+          $("[data-provide='loading']").removeClass("hidden");              
+      }
+      
       $(document).ready(function(){           
         
           var loadedImages = 
@@ -635,6 +641,7 @@
           
           var windowHash = window.location.hash.replace("#", "");
           if( windowHash.length ){
+              showLoadingScreen();
               bootstrap(windowHash, loadedImages);
           }
           
@@ -663,6 +670,7 @@
                  if( result.error ){
                      errorDiv.removeClass("hidden").text(result.error);                     
                  }else{
+                     showLoadingScreen();
                      bootstrap(result.filename, loadedImages);
                  }                 
              });             
@@ -685,15 +693,10 @@
                           
              return false;
           });
-          
-          $("a[data-provide='select-image']").click(function(){
-              
-              $("[data-provide='url-error']").addClass("hidden");
-              $("[data-provide='select-puzzle']").addClass("hidden");
-              $("[data-provide='loading']").removeClass("hidden");
-              
-              bootstrap( $(this).attr("href").replace("#", ""), loadedImages );
-              
+                    
+          $("a[data-provide='select-image']").click(function(){              
+              showLoadingScreen();
+              bootstrap( $(this).attr("href").replace("#", ""), loadedImages );              
               return false;
           });
           
