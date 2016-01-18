@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Angular Demo</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>    
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
+</head>
+
+<body ng-app='angularDemoApp'>
+
+<div class="container" ng-controller="DemoCtrl">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="page-header">
+              <h1>AngularJS: Automatically submit HTML form</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <p>Looking for details of how this works? Check out 
+                <a target="_blank" href="http://shout.setfive.com/2016/01/18/angularjs-automatically-submitting-html-forms/">AngularJS: Automatically submitting HTML forms</a>.
+                Ready to test it out? Push the button!
+            </p>            
+            
+            <a ng-click="utilizeInfo()" class="btn btn-lower btn-primary">Submit Hidden Form</a>
+            <auto-submit-form ng-if="submitForm" submit-form="submitForm"></auto-submit-form>
+        </div>  
+        <div class="col-sm-6">
+            <h3 style="margin: 0">The Code</h3>
+            <pre>         
+angular.module('angularDemoApp', [])
+
+.directive('autoSubmitForm', function($timeout){
+    return {
+        restrict: 'E',
+        replace: true,
+        scope: {submitForm: '='},
+        templateUrl: 'hiddenForm.html',
+        link: function(scope, el, attr){
+            $timeout(function() {
+                angular.element(el).submit();
+            });
+        }
+    };
+})
+
+.controller('DemoCtrl', function ($scope){
+    $scope["utilizeInfo"] = function(){
+        $scope["submitForm"] = {url: "echoForm.php", values: [{name: "name", value: "Phil"}, {name: "age", value: "23"}]};
+    };
+})
+;                        
+            </pre>
+            <pre>
+&#x3C;form method=&#x22;POST&#x22; action=&#x22;{{ submitForm.url }}&#x22; class=&#x22;hidden&#x22;&#x3E;       
+    &#x3C;input ng-repeat=&#x22;field in submitForm.values&#x22; type=&#x22;hidden&#x22; name=&#x22;{{ field.name }}&#x22; value=&#x22;{{ field.value }}&#x22; /&#x3E;     
+&#x3C;/form&#x3E;            
+            </pre>
+        </div>      
+    </div>
+
+</div>
+
+<script>
+    angular.module('angularDemoApp', [])
+
+    .directive('autoSubmitForm', function($timeout){
+        return {
+            restrict: 'E',
+            replace: true,
+            scope: {submitForm: '='},
+            templateUrl: 'hiddenForm.html',
+            link: function(scope, el, attr){
+                $timeout(function() {
+                    angular.element(el).submit();
+                });
+            }
+        };
+    })
+    
+    .controller('DemoCtrl', function ($scope){
+        $scope["utilizeInfo"] = function(){
+            $scope["submitForm"] = {url: "echoForm.php", values: [{name: "name", value: "Phil"}, {name: "age", value: "23"}]};
+        };
+    })
+    ;
+
+</script>
+</body>
+
+
+</html>
